@@ -92,9 +92,9 @@ public class BattleManager : MonoBehaviour
         //Debug.Log($"[battleStarted, roundStarted, turnStarted]: [{battleStarted},{roundStarted},{turnStarted}]");
         //Debug.Log($"[battleEnded, roundEnded, turnEnded]: [{battleEnded},{roundEnded},{turnEnded}]");
 
-        if (battleStarted && battleEnded |
-            roundStarted && roundEnded |
-            turnStarted && turnEnded
+        if (battleStarted & battleEnded |
+            roundStarted & roundEnded |
+            turnStarted & turnEnded
             )
         {
             throw new Exception("State used for battle processing can't be started and ended at the same time");
@@ -105,15 +105,15 @@ public class BattleManager : MonoBehaviour
         {
             if (characters.Count == 1)
             {
-                Debug.Log("Battle will end");
+                //Debug.Log("Battle will end");
                 battleEnded = true;
             }
 
             // checks pour états qui vont commencer
             if (battleStarted || roundStarted || turnStarted)
             {
-                Debug.Log("Un battle state commence");
-                Debug.Log($"[battleStarted, roundStarted, turnStarted]: [{battleStarted},{roundStarted},{turnStarted}]");
+                //Debug.Log("Un battle state commence");
+                //Debug.Log($"[battleStarted, roundStarted, turnStarted]: [{battleStarted},{roundStarted},{turnStarted}]");
                 color = "<color=\"green\">";
 
                 if (battleStarted)
@@ -153,8 +153,8 @@ public class BattleManager : MonoBehaviour
             // checks pour états qui vont terminer
             if (battleEnded || roundEnded || turnEnded)
             {
-                Debug.Log("Un battle state termine");
-                Debug.Log($"[battleEnded, roundEnded, turnEnded]: [{battleEnded},{roundEnded},{turnEnded}]");
+                //Debug.Log("Un battle state termine");
+                //Debug.Log($"[battleEnded, roundEnded, turnEnded]: [{battleEnded},{roundEnded},{turnEnded}]");
                 color = "<color=\"red\">";
 
                 if (turnEnded)
@@ -206,7 +206,7 @@ public class BattleManager : MonoBehaviour
     }
     void RoundHandler()
     {
-        Debug.Log("progression tour normale");
+        //Debug.Log("progression tour normale");
         TurnHandler();
     }
     void TurnHandler()
@@ -220,12 +220,12 @@ public class BattleManager : MonoBehaviour
             }
         }
         else attackTarget = (currentTurn == 0) ? 1 : 0;
-        int randomDmg = Random.Range(1, characters[currentTurn].Attack);
+        float randomDmg = Random.Range(1, characters[currentTurn].Attack);
 
         AddLine2BattleLog($"{characters[currentTurn].CharacterName} a infligé {randomDmg} dégats à {characters[attackTarget].CharacterName}");
         HitEvent?.Invoke(characters[currentTurn]);
         HurtEvent?.Invoke(characters[attackTarget]);
-        characters[attackTarget].SetCurrentHp(characters[attackTarget].CurrentHp - randomDmg);
+        characters[attackTarget].CurrentHp -= randomDmg;
 
 
 

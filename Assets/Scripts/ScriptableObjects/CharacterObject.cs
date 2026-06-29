@@ -1,16 +1,38 @@
+using Globals;
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "CharacterObject", menuName = "Scriptable Objects/CharacterObject")]
+[CreateAssetMenu(fileName = "CharacterObject", menuName = "Scriptable Objects/Character")]
 public class CharacterObject : ScriptableObject
 {
-    [Header("Identification")]
-    public string CharacterName;
+    [field: Header("Identification")]
+    [field: SerializeField] public string CharacterName { get; private set; }
 
-    [Header("Stats")]
-    public int MaxHp;
-    public int CurrentHp { get; private set; }
-    public int Attack, Speed;
+
+    [field: Header("Stats")]
+    [field: SerializeField] public float MaxHp { get; private set; }
+    private float _currentHp;
+    public float CurrentHp
+    {
+        get => _currentHp;
+        set
+        {
+            _currentHp = Math.Clamp(value, 0, MaxHp);
+            if (_currentHp == 0) Die();
+        }
+    }
+    [field: SerializeField] public float Attack { get; private set; }
+    [field: SerializeField] public float Speed { get; private set; }
+
+
+    [Header("Effects depending on event")]
+    [SerializeReference]
+    public Effect[] BattleStartEffects;
+    [SerializeReference]
+    public Effect[] BattleEndEffects,
+        RoundStartEffects, RoundEndEffects,
+        TurnStartEffects, TurnEndEffects;
+
 
     public event Action<CharacterObject> DeadCharacterEvent;
 
@@ -20,15 +42,7 @@ public class CharacterObject : ScriptableObject
     }
 
 
-    /// <summary>
-    /// Setter pour mettre à jour les pv actuels du personnage, en s'assurant qu'ils restent dans les limites de 0 et MaxHp.
-    /// </summary>
-    /// <param name="hp">La nouvelle valeur de pv</param>
-    public void SetCurrentHp(int hp)
-    {
-        CurrentHp = Math.Clamp(hp, 0, MaxHp);
-        if (CurrentHp == 0) Die();
-    }
+
     public void Die()
     {
         DeadCharacterEvent?.Invoke(this);
