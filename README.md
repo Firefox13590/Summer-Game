@@ -16,7 +16,7 @@ projet d'été
 
 ### Git
 
-- TBA
+- JAMAIS TRAVAILLER SUR LA BRANCHE 'main' sauf pour @Firefox13590
 
 ### Structure des fichiers
 
