@@ -16,3 +16,10 @@ MonoBehaviour:
   <MaxHp>k__BackingField: 100
   <Attack>k__BackingField: 21
   <Speed>k__BackingField: 69
+  BattleStartEffects: []
+  BattleEndEffects: []
+  RoundStartEffects: []
+  RoundEndEffects: []
+  TurnStartEffects:
+  - {fileID: 11400000, guid: 660142ebb3456b646adee95fbd69295c, type: 2}
+  TurnEndEffects: []
