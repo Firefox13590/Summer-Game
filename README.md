@@ -6,7 +6,7 @@ projet d'été
 
 - Unity 6.5 (6000.5.0f1)
   - modules:
-    - Microslop Visual Studio Community 2026
+    - Microslop Visual Studio Community (22022 ou 2026)
     - Documentation (optionnel)
 - Git 2.54.0 (2.54.0.windows.1)
 - Git LFS 3.7.1
@@ -16,7 +16,7 @@ projet d'été
 
 ### Git
 
-- TBA
+- JAMAIS modifier la branche *main*, sauf pour @Firefox
 
 ### Structure des fichiers
 

@@ -39,6 +39,11 @@ public class CharacterObject : ScriptableObject
     private void OnEnable()
     {
         CurrentHp = MaxHp;
+        BattleManager.TurnStartEvent += () => ApplyEffectList(TurnStartEffects);
+    }
+    private void OnDisable()
+    {
+        BattleManager.TurnStartEvent -= () => ApplyEffectList(TurnStartEffects);
     }
 
 
@@ -46,5 +51,12 @@ public class CharacterObject : ScriptableObject
     public void Die()
     {
         DeadCharacterEvent?.Invoke(this);
+    }
+    private void ApplyEffectList(Effect[] effects)
+    {
+        for (int i = 0; i < effects.Length; i++)
+        {
+            effects[i].Apply(this);
+        }
     }
 }
