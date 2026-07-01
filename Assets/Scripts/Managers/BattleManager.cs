@@ -238,12 +238,14 @@ public class BattleManager : MonoBehaviour
         }
         else attackTarget = (currentTurn == 0) ? 1 : 0;
         int randomDmg = (int)Random.Range(1, characters[currentTurn].Attack);
+        //Debug.Log("randomDmg: " + randomDmg);
 
         AddLine2BattleLog($"{characters[currentTurn].CharacterName} a infligé {randomDmg} dégats à {characters[attackTarget].CharacterName}");
+        //Debug.Log($"HP of {characters[attackTarget].CharacterName} before randomDmg: {characters[attackTarget].CurrentHp}");
+        characters[attackTarget].CurrentHp -= randomDmg;
+        //Debug.Log($"HP of {characters[attackTarget].CharacterName} after randomDmg: {characters[attackTarget].CurrentHp}");
         HitEvent?.Invoke(characters[currentTurn]);
         HurtEvent?.Invoke(characters[attackTarget]);
-        characters[attackTarget].CurrentHp -= randomDmg;
-
 
 
 
