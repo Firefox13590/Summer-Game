@@ -8,6 +8,8 @@ using Random = UnityEngine.Random;
 
 public class BattleManager : MonoBehaviour
 {
+    public static BattleManager Instance;
+
     public TextMeshProUGUI battleLog;
 
     public static event Action
@@ -21,8 +23,6 @@ public class BattleManager : MonoBehaviour
     List<CharacterObject> characters = new();
     int roundCounter, turnCounter;
     string battleLogText = "";
-    // -1: start, 0: downtime, 1: end
-    int battleStatus, roundStatus, turnStatus;
     bool battleStarted, battleEnded,
         roundStarted, roundEnded,
         turnStarted, turnEnded;
@@ -30,8 +30,13 @@ public class BattleManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else Destroy(Instance);
+
         roundCounter = turnCounter = 1;
-        battleStatus = roundStatus = turnStatus = -1;
         battleStarted = roundStarted = turnStarted = true;
         battleEnded = roundEnded = turnEnded = false;
 
@@ -45,7 +50,7 @@ public class BattleManager : MonoBehaviour
     private void Start()
     {
         ClearBattleLogText();
-        NextBattleAction();
+        //NextBattleAction();
     }
     private void OnDisable()
     {
@@ -61,7 +66,7 @@ public class BattleManager : MonoBehaviour
     /// Ajoute une ligne au journal de combat et met à jour l'affichage du texte du journal.
     /// </summary>
     /// <param name="line">La ligne à ajouter</param>
-    void AddLine2BattleLog(string line = "")
+    public void AddLine2BattleLog(string line = "")
     {
         if (string.IsNullOrEmpty(line.Trim())) return;
 
@@ -121,6 +126,8 @@ public class BattleManager : MonoBehaviour
                     intensity = "<i><b>";
                     content = "Battle started</b></i>";
 
+                    BattleStartEvent?.Invoke();
+
                     battleStarted = false;
                 }
                 else if (roundStarted)
@@ -128,12 +135,16 @@ public class BattleManager : MonoBehaviour
                     intensity = "<b>";
                     content = $"Round #{roundCounter} started</b>";
 
+                    RoundStartEvent?.Invoke();
+
                     roundStarted = false;
                 }
                 else if (turnStarted)
                 {
                     content = $"Turn #{turnCounter}. Turn of <i>" +
                         $"{characters[currentTurn].CharacterName}</i> started";
+
+                    TurnStartEvent?.Invoke();
 
                     turnStarted = false;
                 }
@@ -162,6 +173,8 @@ public class BattleManager : MonoBehaviour
                     content = $"Turn #{turnCounter}. Turn of <i>" +
                         $"{characters[currentTurn].CharacterName}</i> ended";
 
+                    BattleEndEvent?.Invoke();
+
                     turnCounter++;
                     currentTurn = nextTurn;
                     turnEnded = false;
@@ -175,6 +188,8 @@ public class BattleManager : MonoBehaviour
                     intensity = "<b>";
                     content = $"Round #{roundCounter} ended</b>";
 
+                    RoundEndEvent?.Invoke();
+
                     roundCounter++;
                     roundEnded = false;
                     if (!battleEnded) roundStarted = turnStarted = true;
@@ -183,6 +198,8 @@ public class BattleManager : MonoBehaviour
                 {
                     intensity = "<i><b>";
                     content = "Battle ended</b></i>";
+
+                    TurnEndEvent?.Invoke();
 
                     Destroy(gameObject);
                 }
@@ -220,13 +237,15 @@ public class BattleManager : MonoBehaviour
             }
         }
         else attackTarget = (currentTurn == 0) ? 1 : 0;
-        float randomDmg = Random.Range(1, characters[currentTurn].Attack);
+        int randomDmg = (int)Random.Range(1, characters[currentTurn].Attack);
+        //Debug.Log("randomDmg: " + randomDmg);
 
         AddLine2BattleLog($"{characters[currentTurn].CharacterName} a infligé {randomDmg} dégats à {characters[attackTarget].CharacterName}");
+        //Debug.Log($"HP of {characters[attackTarget].CharacterName} before randomDmg: {characters[attackTarget].CurrentHp}");
+        characters[attackTarget].CurrentHp -= randomDmg;
+        //Debug.Log($"HP of {characters[attackTarget].CharacterName} after randomDmg: {characters[attackTarget].CurrentHp}");
         HitEvent?.Invoke(characters[currentTurn]);
         HurtEvent?.Invoke(characters[attackTarget]);
-        characters[attackTarget].CurrentHp -= randomDmg;
-
 
 
 

@@ -39,6 +39,21 @@ public class CharacterObject : ScriptableObject
     private void OnEnable()
     {
         CurrentHp = MaxHp;
+        BattleManager.BattleStartEvent += () => ApplyEffectList(BattleStartEffects);
+        BattleManager.RoundStartEvent += () => ApplyEffectList(RoundStartEffects);
+        BattleManager.TurnStartEvent += () => ApplyEffectList(TurnStartEffects);
+        BattleManager.BattleEndEvent += () => ApplyEffectList(BattleEndEffects);
+        BattleManager.RoundEndEvent += () => ApplyEffectList(RoundEndEffects);
+        BattleManager.TurnEndEvent += () => ApplyEffectList(TurnEndEffects);
+    }
+    private void OnDisable()
+    {
+        BattleManager.BattleStartEvent -= () => ApplyEffectList(BattleStartEffects);
+        BattleManager.RoundStartEvent -= () => ApplyEffectList(RoundStartEffects);
+        BattleManager.TurnStartEvent -= () => ApplyEffectList(TurnStartEffects);
+        BattleManager.BattleEndEvent -= () => ApplyEffectList(BattleEndEffects);
+        BattleManager.RoundEndEvent -= () => ApplyEffectList(RoundEndEffects);
+        BattleManager.TurnEndEvent -= () => ApplyEffectList(TurnEndEffects);
     }
 
 
@@ -46,5 +61,13 @@ public class CharacterObject : ScriptableObject
     public void Die()
     {
         DeadCharacterEvent?.Invoke(this);
+    }
+    private void ApplyEffectList(Effect[] effects)
+    {
+        if (effects.Length == 0) return;
+        for (int i = 0; i < effects.Length; i++)
+        {
+            effects[i].Apply(this);
+        }
     }
 }
