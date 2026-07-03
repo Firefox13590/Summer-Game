@@ -17,6 +17,8 @@ MonoBehaviour:
   <Attack>k__BackingField: 21
   <Defense>k__BackingField: 2
   <Speed>k__BackingField: 69
+  StatDef:
+    <BaseValue>k__BackingField: 100
   BattleStartEffects: []
   BattleEndEffects: []
   RoundStartEffects: []
@@ -24,3 +26,5 @@ MonoBehaviour:
   TurnStartEffects:
   - {fileID: 11400000, guid: 660142ebb3456b646adee95fbd69295c, type: 2}
   TurnEndEffects: []
+  HitEffects: []
+  HurtEffects: []

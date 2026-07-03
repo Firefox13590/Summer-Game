@@ -1,22 +1,10 @@
 using Globals;
-using NaughtyAttributes;
 using System;
 using UnityEngine;
 
-[Serializable]
-[CreateAssetMenu(fileName = "HealEffectObject", menuName = "Scriptable Objects/Effects/Heal")]
+[CreateAssetMenu(fileName = "Heal", menuName = "Scriptable Objects/Effects/HealEffectObject")]
 public class HealEffectObject : Effect
 {
-    public NumberType NumberType = NumberType.Flat;
-    [ShowIf(nameof(NumberType), NumberType.Flat)]
-    public float FlatHeal = 10;
-    [ShowIf(nameof(NumberType), NumberType.BasePercent)]
-    [Range(0f, 1f)]
-    public float BasePercentHeal = .1f;
-    [ShowIf(nameof(NumberType), NumberType.ModifiedPercent)]
-    [Range(0f, 1f)]
-    public float ModifiedPercentHeal = .2f;
-
     float HealAmmount;
 
     public override void Apply(CharacterObject target)
@@ -24,13 +12,13 @@ public class HealEffectObject : Effect
         switch (NumberType)
         {
             case NumberType.Flat:
-                HealAmmount = FlatHeal;
+                HealAmmount = FlatAmmount;
                 break;
             case NumberType.BasePercent:
-                HealAmmount = target.MaxHp * BasePercentHeal;
+                HealAmmount = target.MaxHp * BasePercentAmmount;
                 break;
             case NumberType.ModifiedPercent:
-                HealAmmount = target.CurrentHp * ModifiedPercentHeal;
+                HealAmmount = target.CurrentHp * ModifiedPercentAmmount;
                 break;
         }
         target.CurrentHp += HealAmmount;

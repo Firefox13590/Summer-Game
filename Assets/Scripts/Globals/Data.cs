@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NaughtyAttributes;
+using System;
 using UnityEngine;
 
 namespace Globals
@@ -37,7 +38,8 @@ namespace Globals
     public struct CharacterStat
     {
         [field: SerializeField]
-        float BaseValue { get; set; }
+        public float BaseValue { get; private set; }
+        [field: SerializeField, ReadOnly, AllowNesting]
         public float ModifiedValue { get; private set; }
 
         public CharacterStat(float baseValue = 100)
@@ -53,11 +55,12 @@ namespace Globals
         }
     }
 
+    [Serializable]
     public struct StatModifier
     {
         public int Additive;
 
-        float _mulitplicative;
+        [SerializeField] float _mulitplicative;
         public float Mulitplicative
         {
             get => _mulitplicative;
@@ -76,10 +79,19 @@ namespace Globals
     }
 
 
-
+    [Serializable]
     public abstract class Effect : ScriptableObject
     {
         public Tag[] Tags;
+
+        public NumberType NumberType = NumberType.Flat;
+        [ShowIf(nameof(NumberType), NumberType.Flat), Min(0)]
+        public float FlatAmmount = 10;
+        [ShowIf(nameof(NumberType), NumberType.BasePercent), Min(0)]
+        public float BasePercentAmmount = .1f;
+        [ShowIf(nameof(NumberType), NumberType.ModifiedPercent), Min(0)]
+        public float ModifiedPercentAmmount = .2f;
+
         public abstract void Apply(CharacterObject target);
     }
 }

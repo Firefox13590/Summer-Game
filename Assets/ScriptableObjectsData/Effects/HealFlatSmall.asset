@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 36881b491927fc649a572385cfdfb06f, type: 3}
-  m_Name: HealEffectObject
+  m_Name: HealFlatSmall
   m_EditorClassIdentifier: Assembly-CSharp::HealEffectObject
   Tags: 0000000004000000050000000700000009000000
   NumberType: 0
