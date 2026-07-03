@@ -11,7 +11,7 @@ public class CharacterObject : ScriptableObject
 
     [field: Header("Stats")]
     [field: SerializeField] public float MaxHp { get; private set; }
-    private float _currentHp;
+    float _currentHp;
     public float CurrentHp
     {
         get => _currentHp;
@@ -22,6 +22,7 @@ public class CharacterObject : ScriptableObject
         }
     }
     [field: SerializeField] public float Attack { get; private set; }
+    [field: SerializeField] public float Defense { get; private set; }
     [field: SerializeField] public float Speed { get; private set; }
 
 

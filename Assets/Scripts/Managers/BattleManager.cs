@@ -1,3 +1,4 @@
+using Globals;
 using Placeholder;
 using System;
 using System.Collections.Generic;
@@ -237,7 +238,7 @@ public class BattleManager : MonoBehaviour
             }
         }
         else attackTarget = (currentTurn == 0) ? 1 : 0;
-        int randomDmg = (int)Random.Range(1, characters[currentTurn].Attack);
+        int randomDmg = Calculations.CalculateDamage(characters[currentTurn], characters[attackTarget]);
         //Debug.Log("randomDmg: " + randomDmg);
 
         AddLine2BattleLog($"{characters[currentTurn].CharacterName} a infligé {randomDmg} dégats à {characters[attackTarget].CharacterName}");

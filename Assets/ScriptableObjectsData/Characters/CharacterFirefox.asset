@@ -15,6 +15,7 @@ MonoBehaviour:
   <CharacterName>k__BackingField: Firefox
   <MaxHp>k__BackingField: 100
   <Attack>k__BackingField: 21
+  <Defense>k__BackingField: 2
   <Speed>k__BackingField: 69
   BattleStartEffects: []
   BattleEndEffects: []

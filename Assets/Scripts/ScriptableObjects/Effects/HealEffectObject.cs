@@ -17,7 +17,7 @@ public class HealEffectObject : Effect
     [Range(0f, 1f)]
     public float ModifiedPercentHeal = .2f;
 
-    private float HealAmmount;
+    float HealAmmount;
 
     public override void Apply(CharacterObject target)
     {
@@ -36,6 +36,6 @@ public class HealEffectObject : Effect
         target.CurrentHp += HealAmmount;
 
         BattleManager.Instance.AddLine2BattleLog(
-            $"<i>{target.CharacterName} healed {(int)HealAmmount} hp.</i>");
+            $"<i>{target.CharacterName} healed {Math.Round(HealAmmount)} hp.</i>");
     }
 }

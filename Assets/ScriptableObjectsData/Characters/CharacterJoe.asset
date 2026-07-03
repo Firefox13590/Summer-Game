@@ -15,4 +15,11 @@ MonoBehaviour:
   <CharacterName>k__BackingField: Joe
   <MaxHp>k__BackingField: 200
   <Attack>k__BackingField: 15
+  <Defense>k__BackingField: 0
   <Speed>k__BackingField: 33
+  BattleStartEffects: []
+  BattleEndEffects: []
+  RoundStartEffects: []
+  RoundEndEffects: []
+  TurnStartEffects: []
+  TurnEndEffects: []

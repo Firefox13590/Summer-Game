@@ -37,6 +37,7 @@ namespace Placeholder
             UpdateCharacterHpUI();
             textContainer.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = $"Attack: {character.Attack}";
             textContainer.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = $"Speed: {character.Speed}";
+            textContainer.transform.GetChild(4).GetComponent<TextMeshProUGUI>().text = $"Defense: {character.Defense}";
         }
         /// <summary>
         /// Met à jour l'affichage des PV du personnage dans l'UI.
