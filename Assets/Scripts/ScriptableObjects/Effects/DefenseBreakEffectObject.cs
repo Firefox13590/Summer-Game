@@ -7,41 +7,46 @@ using Random = UnityEngine.Random;
 [CreateAssetMenu(fileName = "DefenseBreak", menuName = "Scriptable Objects/Effects/DefenseBreakEffectObject")]
 public class DefenseBreakEffectObject : Effect
 {
-    public bool IsChance = false;
-    [ShowIf(nameof(IsChance)), Range(0f, 1f)]
-    public float ChancePercent = .5f;
+    public bool isChance = false;
+    [ShowIf(nameof(isChance)), Range(0f, 1f)]
+    public float chancePercent = .5f;
 
-    float BreakAmmount;
+    float breakAmmount;
 
-    public override void Apply(CharacterObject target)
+    public override void Apply(CharacterObject _, CharacterObject[] targets)
     {
-        bool hitChanceRoll = false;
-
-        if (IsChance)
+        foreach (CharacterObject target in targets)
         {
-            if (Random.Range(0f, 1f) <= ChancePercent) hitChanceRoll = true;
-        }
-        else hitChanceRoll = true;
+            Debug.Log(target.CharacterName);
+            bool hitChanceRoll = false;
 
-
-        if (hitChanceRoll)
-        {
-            switch (NumberType)
+            if (isChance)
             {
-                case NumberType.Flat:
-                    BreakAmmount = FlatAmmount;
-                    break;
-                case NumberType.BasePercent:
-                    BreakAmmount = target.StatDef.BaseValue * BasePercentAmmount;
-                    break;
-                case NumberType.ModifiedPercent:
-                    BreakAmmount = target.StatDef.ModifiedValue * ModifiedPercentAmmount;
-                    break;
+                if (Random.Range(0f, 1f) <= chancePercent) hitChanceRoll = true;
             }
-            target.CurrentHp -= BreakAmmount;
+            else hitChanceRoll = true;
 
-            BattleManager.Instance.AddLine2BattleLog(
-                $"<i>{target.CharacterName} healed {Math.Round(BreakAmmount)} hp.</i>");
+
+            if (hitChanceRoll)
+            {
+                switch (numberType)
+                {
+                    case NumberType.Flat:
+                        breakAmmount = flatAmmount;
+                        break;
+                    case NumberType.BasePercent:
+                        breakAmmount = target.StatDef.BaseValue * basePercentAmmount;
+                        break;
+                    case NumberType.ModifiedPercent:
+                        breakAmmount = target.StatDef.ModifiedValue * modifiedPercentAmmount;
+                        break;
+                }
+                target.StatDef.ModifiedValue -= breakAmmount;
+
+                BattleManager.Instance.AddLine2BattleLog(
+                    $"<i>{target.CharacterName} got their defense broken by {Math.Round(breakAmmount)}." +
+                    $"Their new defense is {target.StatDef}</i>");
+            }
         }
     }
 }

@@ -5,25 +5,25 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Heal", menuName = "Scriptable Objects/Effects/HealEffectObject")]
 public class HealEffectObject : Effect
 {
-    float HealAmmount;
+    float healAmmount;
 
     public override void Apply(CharacterObject target)
     {
-        switch (NumberType)
+        switch (numberType)
         {
             case NumberType.Flat:
-                HealAmmount = FlatAmmount;
+                healAmmount = flatAmmount;
                 break;
             case NumberType.BasePercent:
-                HealAmmount = target.MaxHp * BasePercentAmmount;
+                healAmmount = target.MaxHp * basePercentAmmount;
                 break;
             case NumberType.ModifiedPercent:
-                HealAmmount = target.CurrentHp * ModifiedPercentAmmount;
+                healAmmount = target.CurrentHp * modifiedPercentAmmount;
                 break;
         }
-        target.CurrentHp += HealAmmount;
+        target.CurrentHp += healAmmount;
 
         BattleManager.Instance.AddLine2BattleLog(
-            $"<i>{target.CharacterName} healed {Math.Round(HealAmmount)} hp.</i>");
+            $"<i>{target.CharacterName} healed {Math.Round(healAmmount)} hp.</i>");
     }
 }

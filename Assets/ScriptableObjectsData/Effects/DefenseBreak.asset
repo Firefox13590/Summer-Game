@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc8a088ff83813d40b06f5886ae0f43d, type: 3}
   m_Name: DefenseBreak
   m_EditorClassIdentifier: Assembly-CSharp::DefenseBreakEffectObject
-  Tags: 
+  Tags: 020000000600000008000000
   NumberType: 0
   FlatAmmount: 5
   BasePercentAmmount: 0.1

@@ -20,6 +20,27 @@ MonoBehaviour:
   StatDef:
     <BaseValue>k__BackingField: 100
     <ModifiedValue>k__BackingField: 100
+  Modifiers:
+  - Additive: 0
+    _mulitplicative: 0
+  - Additive: 0
+    _mulitplicative: 0
+  - Additive: 0
+    _mulitplicative: 0
+  - Additive: 0
+    _mulitplicative: 0
+  - Additive: 0
+    _mulitplicative: 0
+  - Additive: 0
+    _mulitplicative: 0
+  - Additive: 0
+    _mulitplicative: 0
+  - Additive: 0
+    _mulitplicative: 0
+  - Additive: 0
+    _mulitplicative: 0
+  - Additive: 0
+    _mulitplicative: 0
   BattleStartEffects: []
   BattleEndEffects: []
   RoundStartEffects: []

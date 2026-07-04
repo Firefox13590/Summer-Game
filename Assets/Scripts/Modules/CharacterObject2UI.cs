@@ -18,12 +18,12 @@ namespace Placeholder
         private void OnEnable()
         {
             character.DeadCharacterEvent += KillCharacter;
-            BattleManager.HurtEvent += (hurtCharacter) => { if (hurtCharacter == character) UpdateCharacterSheetUI(); };
+            BattleManager.HurtEvent += (hurtCharacter, _) => { if (hurtCharacter == character) UpdateCharacterSheetUI(); };
         }
         private void OnDisable()
         {
             character.DeadCharacterEvent -= KillCharacter;
-            BattleManager.HurtEvent -= (hurtCharacter) => { if (hurtCharacter == character) UpdateCharacterSheetUI(); };
+            BattleManager.HurtEvent -= (hurtCharacter, _) => { if (hurtCharacter == character) UpdateCharacterSheetUI(); };
         }
 
 
