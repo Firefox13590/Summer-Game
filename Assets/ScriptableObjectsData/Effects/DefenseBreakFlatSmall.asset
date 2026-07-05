@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc8a088ff83813d40b06f5886ae0f43d, type: 3}
-  m_Name: DefenseBreak
+  m_Name: DefenseBreakFlatSmall
   m_EditorClassIdentifier: Assembly-CSharp::DefenseBreakEffectObject
   tags: 
   numberType: 0
@@ -18,12 +18,17 @@ MonoBehaviour:
   basePercentAmmount: 0.1
   modifiedPercentAmmount: 0.2
   statModifier:
+    <Name>k__BackingField: 
     <CounterType>k__BackingField: 0
     <Counter>k__BackingField: -1
     characterStatRef:
-      <BaseValue>k__BackingField: 0
-      <ModifiedValue>k__BackingField: 0
+      rid: -2
     additive: 0
     mulitplicative: 1
   isChance: 0
   chancePercent: 0.5
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

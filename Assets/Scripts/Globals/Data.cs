@@ -1,5 +1,6 @@
 ﻿using NaughtyAttributes;
 using System;
+using System.Xml.Linq;
 using UnityEngine;
 
 namespace Globals
@@ -69,7 +70,10 @@ namespace Globals
         public float BaseValue { get; private set; }
         [field: SerializeField, ReadOnly, AllowNesting]
         public float ModifiedValue { get; set; }
+        StatModifier cumulativeModifiers = new();
+
         public static CharacterStat defaultCharacterStat = new();
+
 
         public CharacterStat()
         {
@@ -78,7 +82,8 @@ namespace Globals
         }
         public CharacterStat(float baseValue)
         {
-            BaseValue = ModifiedValue = baseValue;
+            BaseValue = baseValue;
+            Init();
         }
         public override string ToString()
         {
@@ -87,12 +92,18 @@ namespace Globals
 
 
 
-
+        public void Init()
+        {
+            ModifiedValue = BaseValue;
+            cumulativeModifiers = new();
+        }
         public void ModifyStat(StatModifier modifier)
         {
-            Debug.Log($"Updated CharacterStat from: {this}");
-            ModifiedValue = (BaseValue + modifier.additive) * modifier.Mulitplicative;
-            Debug.Log($"To: {this}");
+            cumulativeModifiers = StatModifier.Combine(cumulativeModifiers, modifier);
+
+            //Debug.Log($"Updated CharacterStat from: {this}");
+            ModifiedValue = (BaseValue + cumulativeModifiers.additive) * cumulativeModifiers.Multiplicative;
+            //Debug.Log($"To: {this}");
         }
     }
 
@@ -100,50 +111,65 @@ namespace Globals
     public class StatModifier
     {
         readonly bool isReadOnly = false;
+
+        [field: SerializeField, EnableIf(nameof(isReadOnly)), AllowNesting]
+        public string Name { get; private set; }
         [field: SerializeField, EnableIf(nameof(isReadOnly)), AllowNesting]
         public CounterType CounterType { get; private set; }
         [field: SerializeField, EnableIf(nameof(isReadOnly)), AllowNesting]
         public int Counter { get; private set; }
-        [EnableIf(nameof(isReadOnly)), AllowNesting]
+        [SerializeReference, ReadOnly, AllowNesting]
         public CharacterStat characterStatRef;
         [EnableIf(nameof(isReadOnly)), AllowNesting]
         public float additive;
-
         [SerializeField, EnableIf(nameof(isReadOnly)), AllowNesting]
-        float mulitplicative;
-        public float Mulitplicative
+        float multiplicative;
+        public float Multiplicative
         {
-            get => mulitplicative;
+            get => multiplicative;
             set
             {
                 if (value < 0) throw new ArgumentOutOfRangeException("Multiplicative modifier can't be negative");
-                mulitplicative = value;
+                multiplicative = value;
             }
         }
         public static StatModifier defaultStatModifier = new();
 
+
         public StatModifier()
         {
             isReadOnly = false;
-            CounterType = 0;
-            Counter = -1;
+            Name = "";
+            SetNewCounter(0, -1);
             characterStatRef = null;
             additive = 0;
-            Mulitplicative = 1;
+            Multiplicative = 1;
         }
-        public StatModifier(bool isReadOnly, CounterType counterType = 0, int counter = 0, CharacterStat characterStat = null, float additive = 0, float multiplicative = 1)
+        public StatModifier(StatModifier modifier)
+        {
+            isReadOnly = modifier.isReadOnly;
+            Name = modifier.Name;
+            SetNewCounter(modifier.CounterType, modifier.Counter);
+            characterStatRef = modifier.characterStatRef;
+            additive = modifier.additive;
+            Multiplicative = modifier.Multiplicative;
+        }
+        public StatModifier(bool isReadOnly = false, string name = "", CounterType counterType = 0, int counter = -1, CharacterStat characterStat = null, float additive = 0, float multiplicative = 1)
         {
             this.isReadOnly = isReadOnly;
-            CounterType = counterType;
-            Counter = counter;
+            Name = name;
+            SetNewCounter(counterType, counter);
             characterStatRef = characterStat;
             this.additive = additive;
-            Mulitplicative = multiplicative;
+            Multiplicative = multiplicative;
         }
         public override string ToString()
         {
-            return $"+{additive}, x{mulitplicative}";
+            return $"{Name}: {additive}, x{multiplicative}";
         }
+
+
+
         public void SetNewCounter(CounterType counterType, int counter = -1)
         {
             CounterType = counterType;
@@ -169,6 +195,13 @@ namespace Globals
             }
             else Counter = counter;
         }
+        public void DecrementCounter() => Counter--;
+        public static StatModifier Combine(StatModifier firstModifier, StatModifier secondModifier)
+        {
+            return new(
+                additive: firstModifier.additive + secondModifier.additive,
+                multiplicative: firstModifier.multiplicative * secondModifier.multiplicative);
+        }
     }
 
 
@@ -181,10 +214,13 @@ namespace Globals
         [Header("Valeur de l'effet"), Space(30)]
         public NumberType numberType = NumberType.Flat;
         [ShowIf(nameof(numberType), NumberType.Flat), Min(0)]
+        [Tooltip("Valeur additive")]
         public float flatAmmount = 10;
         [ShowIf(nameof(numberType), NumberType.BasePercent), Min(0)]
+        [Tooltip("Valeur multiplicative. Échelle de 0 à 1. Ex: 0.5 -> 50%. Se base sur BaseValue")]
         public float basePercentAmmount = .1f;
         [ShowIf(nameof(numberType), NumberType.ModifiedPercent), Min(0)]
+        [Tooltip("Valeur multiplicative. Échelle de 0 à 1. Ex: 0.5 -> 50%. Se base sur ModifiedValue")]
         public float modifiedPercentAmmount = .2f;
 
         [Header("Modificateur de stat, si nécessaire"), Space(30)]

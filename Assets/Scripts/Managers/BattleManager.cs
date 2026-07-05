@@ -15,7 +15,8 @@ public class BattleManager : Singleton<BattleManager>
 
     public static event Action
         BattleStartEvent, BattleEndEvent,
-        RoundStartEvent, RoundEndEvent,
+        RoundStartEvent, RoundEndEvent;
+    public static event Action<CharacterObject>
         TurnStartEvent, TurnEndEvent;
     public static event Action<CharacterObject, CharacterObject[]> HitEvent;
     public static event Action<CharacterObject, CharacterObject> HurtEvent;
@@ -148,7 +149,7 @@ public class BattleManager : Singleton<BattleManager>
                     content = $"Turn #{turnCounter}. Turn of <i>" +
                         $"{characters[currentTurn].CharacterName}</i> started";
 
-                    TurnStartEvent?.Invoke();
+                    TurnStartEvent?.Invoke(characters[currentTurn]);
 
                     turnStarted = false;
                 }
@@ -203,7 +204,7 @@ public class BattleManager : Singleton<BattleManager>
                     intensity = "<i><b>";
                     content = "Battle ended</b></i>";
 
-                    TurnEndEvent?.Invoke();
+                    TurnEndEvent?.Invoke(characters[currentTurn]);
 
                     Destroy(gameObject);
                 }

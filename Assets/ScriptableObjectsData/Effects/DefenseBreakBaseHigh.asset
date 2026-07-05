@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8a088ff83813d40b06f5886ae0f43d, type: 3}
+  m_Name: DefenseBreakBaseHigh
+  m_EditorClassIdentifier: Assembly-CSharp::DefenseBreakEffectObject
+  tags: 
+  numberType: 1
+  flatAmmount: 10
+  basePercentAmmount: 0.5
+  modifiedPercentAmmount: 0.2
+  statModifier:
+    <Name>k__BackingField: 
+    <CounterType>k__BackingField: 0
+    <Counter>k__BackingField: 1
+    characterStatRef:
+      rid: -2
+    additive: 0
+    mulitplicative: 1
+  isChance: 0
+  chancePercent: 0.5
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

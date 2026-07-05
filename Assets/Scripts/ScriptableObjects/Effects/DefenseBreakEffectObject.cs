@@ -17,7 +17,7 @@ public class DefenseBreakEffectObject : Effect
     {
         foreach (CharacterObject target in targets)
         {
-            Debug.Log(target.CharacterName);
+            //Debug.Log(target.CharacterName);
             bool hitChanceRoll = false;
 
             if (isChance)
@@ -42,10 +42,33 @@ public class DefenseBreakEffectObject : Effect
                         break;
                 }
 
-                statModifier.characterStatRef = target.StatDef;
-                statModifier.additive = -breakAmmount;
-                statModifier.SetNewCounter(CounterType.Turn);
-                target.AddStatModifier(statModifier);
+                //statModifier = new(
+                //    true,
+                //    name,
+                //    CounterType.Turn,
+                //    characterStat: target.StatDef,
+                //    additive: -breakAmmount);
+                //statModifier = new(
+                //    true,
+                //    name: (string.IsNullOrEmpty(statModifier.Name.Trim())) ? name : statModifier.Name.Trim(),
+                //    counterType: statModifier.CounterType,
+                //    counter: statModifier.Counter,
+                //    additive: (numberType == NumberType.Flat) ? -breakAmmount : StatModifier.defaultStatModifier.additive,
+                //    multiplicative: (numberType != NumberType.Flat) ? breakAmmount : StatModifier.defaultStatModifier.Multiplicative
+                //    );
+                //statModifier = new(statModifier);
+                //statModifier.characterStatRef = target.StatDef;
+                //target.AddStatModifier(statModifier);
+                Debug.Log(breakAmmount);
+                target.AddStatModifier(new(
+                    true,
+                    (string.IsNullOrEmpty(statModifier.Name.Trim())) ? name : statModifier.Name.Trim(),
+                    statModifier.CounterType,
+                    statModifier.Counter,
+                    target.StatDef,
+                    (numberType == NumberType.Flat) ? -breakAmmount : StatModifier.defaultStatModifier.additive,
+                    (numberType != NumberType.Flat) ? breakAmmount : StatModifier.defaultStatModifier.Multiplicative
+                    ));
 
                 BattleManager.Instance.AddLine2BattleLog(
                     $"<i>{target.CharacterName} got their defense broken by {Math.Round(breakAmmount)}." +

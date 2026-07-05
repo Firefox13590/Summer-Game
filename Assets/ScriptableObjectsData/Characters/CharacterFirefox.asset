@@ -19,7 +19,7 @@ MonoBehaviour:
   <Speed>k__BackingField: 69
   StatDef:
     <BaseValue>k__BackingField: 100
-    <ModifiedValue>k__BackingField: 100
+    <ModifiedValue>k__BackingField: 90
   modifiers:
   - rid: -2
   - rid: -2

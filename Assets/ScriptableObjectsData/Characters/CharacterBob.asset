@@ -39,6 +39,7 @@ MonoBehaviour:
   turnEndEffects: []
   hitEffects:
   - {fileID: 11400000, guid: 5248eac664f41844e9a587bfcd4a6ae2, type: 2}
+  - {fileID: 11400000, guid: 0379e8fb83546744aa72937b4b4c1642, type: 2}
   hurtEffects: []
   references:
     version: 2

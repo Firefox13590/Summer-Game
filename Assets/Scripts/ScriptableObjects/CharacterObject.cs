@@ -1,7 +1,10 @@
 using Globals;
+using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static UnityEditor.Progress;
 
 [CreateAssetMenu(fileName = "CharacterObject", menuName = "Scriptable Objects/Character")]
 public class CharacterObject : ScriptableObject
@@ -48,33 +51,47 @@ public class CharacterObject : ScriptableObject
 
     public event Action<CharacterObject> DeadCharacterEvent;
 
-    private void Awake()
-    {
-        CurrentHp = MaxHp;
-    }
+
     private void OnEnable()
     {
+        CurrentHp = MaxHp;
+        StatDef.Init();
+        Array.Fill(modifiers, null);
+
         BattleManager.BattleStartEvent += () => ApplyEffectList(battleStartEffects);
         BattleManager.RoundStartEvent += () => ApplyEffectList(roundStartEffects);
-        BattleManager.TurnStartEvent += () => ApplyEffectList(turnStartEffects);
+        BattleManager.TurnStartEvent += (_) => ApplyEffectList(turnStartEffects);
         BattleManager.BattleEndEvent += () => ApplyEffectList(battleEndEffects);
         BattleManager.RoundEndEvent += () => ApplyEffectList(roundEndEffects);
-        BattleManager.TurnEndEvent += () => ApplyEffectList(turnEndEffects);
+        BattleManager.TurnEndEvent += (_) => ApplyEffectList(turnEndEffects);
 
         BattleManager.HitEvent += (attacker, targets) => { if (attacker == this) ApplyEffectList(hitEffects, attacker, targets); };
         BattleManager.HurtEvent += (defender, attacker) => { if (defender == this) ApplyEffectList(hurtEffects, defender, attacker); };
+
+        BattleManager.BattleStartEvent += () => { DecrementCounters(CounterType.Battle); };
+        BattleManager.TurnStartEvent += (character) => { DecrementCounters(CounterType.Turn, character); };
+        BattleManager.RoundEndEvent += () => { DecrementCounters(CounterType.Round); };
+        BattleManager.HitEvent += (_, _) => { DecrementCounters(CounterType.Hit); };
+        BattleManager.HurtEvent += (_, _) => { DecrementCounters(CounterType.Hurt); };
+
     }
     private void OnDisable()
     {
         BattleManager.BattleStartEvent -= () => ApplyEffectList(battleStartEffects);
         BattleManager.RoundStartEvent -= () => ApplyEffectList(roundStartEffects);
-        BattleManager.TurnStartEvent -= () => ApplyEffectList(turnStartEffects);
+        BattleManager.TurnStartEvent -= (_) => ApplyEffectList(turnStartEffects);
         BattleManager.BattleEndEvent -= () => ApplyEffectList(battleEndEffects);
         BattleManager.RoundEndEvent -= () => ApplyEffectList(roundEndEffects);
-        BattleManager.TurnEndEvent -= () => ApplyEffectList(turnEndEffects);
+        BattleManager.TurnEndEvent -= (_) => ApplyEffectList(turnEndEffects);
 
         BattleManager.HitEvent -= (attacker, targets) => { if (attacker == this) ApplyEffectList(hitEffects, attacker, targets); };
         BattleManager.HurtEvent -= (defender, attacker) => { if (defender == this) ApplyEffectList(hurtEffects, defender, attacker); };
+
+        BattleManager.BattleStartEvent -= () => { DecrementCounters(CounterType.Battle); };
+        BattleManager.TurnStartEvent -= (character) => { DecrementCounters(CounterType.Turn, character); };
+        BattleManager.RoundEndEvent -= () => { DecrementCounters(CounterType.Round); };
+        BattleManager.HitEvent -= (_, _) => { DecrementCounters(CounterType.Hit); };
+        BattleManager.HurtEvent -= (_, _) => { DecrementCounters(CounterType.Hurt); };
     }
     private void OnValidate()
     {
@@ -127,12 +144,25 @@ public class CharacterObject : ScriptableObject
             }
         }
     }
+    private void ResetStats()
+    {
+        foreach (var modifier in modifiers)
+        {
+            if (modifier == null) continue;
+            else if (modifier.characterStatRef == null) throw new ArgumentNullException("La référence de CharacterStat d'un StatModifier ne peut pas être nul.");
+            else
+            {
+                modifier.characterStatRef.Init();
+            }
+        }
+        UpdateStats();
+    }
     public void AddStatModifier(StatModifier modifier)
     {
         int indexLowestCounter = -1, lowestCounter = int.MaxValue;
         bool modifierAdded = false;
 
-        if (modifiers.Contains(modifier)) modifierAdded = true;
+        if (modifiers.FirstOrDefault(mod => mod != null && mod.Name == modifier.Name)?.Name == modifier.Name) modifierAdded = true;
 
         if (!modifierAdded)
         {
@@ -155,5 +185,25 @@ public class CharacterObject : ScriptableObject
         }
 
         UpdateStats();
+    }
+    void DecrementCounters(CounterType counterType)
+    {
+        for (int i = 0; i < modifiers.Length; i++)
+        {
+            if (modifiers[i] == null) continue;
+            if (modifiers[i].CounterType == counterType)
+            {
+                modifiers[i].DecrementCounter();
+                if (modifiers[i].Counter == 0)
+                {
+                    modifiers[i] = null;
+                    ResetStats();
+                }
+            }
+        }
+    }
+    void DecrementCounters(CounterType counterType, CharacterObject character)
+    {
+        if (character == this) DecrementCounters(counterType);
     }
 }

@@ -19,12 +19,28 @@ MonoBehaviour:
   <Speed>k__BackingField: 33
   StatDef:
     <BaseValue>k__BackingField: 100
-    <ModifiedValue>k__BackingField: 100
-  BattleStartEffects: []
-  BattleEndEffects: []
-  RoundStartEffects: []
-  RoundEndEffects: []
-  TurnStartEffects: []
-  TurnEndEffects: []
-  HitEffects: []
-  HurtEffects: []
+    <ModifiedValue>k__BackingField: 90
+  modifiers:
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  battleStartEffects: []
+  battleEndEffects: []
+  roundStartEffects: []
+  roundEndEffects: []
+  turnStartEffects: []
+  turnEndEffects: []
+  hitEffects: []
+  hurtEffects: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
