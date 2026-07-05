@@ -42,6 +42,7 @@ public class DefenseBreakEffectObject : Effect
                         break;
                 }
 
+                // https://github.com/Firefox13590/Summer-Game/issues/2
                 //statModifier = new(
                 //    true,
                 //    name,
