@@ -12,10 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc8a088ff83813d40b06f5886ae0f43d, type: 3}
   m_Name: DefenseBreak
   m_EditorClassIdentifier: Assembly-CSharp::DefenseBreakEffectObject
-  Tags: 020000000600000008000000
-  NumberType: 0
-  FlatAmmount: 5
-  BasePercentAmmount: 0.1
-  ModifiedPercentAmmount: 0.2
-  IsChance: 1
-  ChancePercent: 0.5
+  tags: 
+  numberType: 0
+  flatAmmount: 10
+  basePercentAmmount: 0.1
+  modifiedPercentAmmount: 0.2
+  statModifier:
+    <CounterType>k__BackingField: 0
+    <Counter>k__BackingField: -1
+    characterStatRef:
+      <BaseValue>k__BackingField: 0
+      <ModifiedValue>k__BackingField: 0
+    additive: 0
+    mulitplicative: 1
+  isChance: 0
+  chancePercent: 0.5

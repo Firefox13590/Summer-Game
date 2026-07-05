@@ -41,7 +41,11 @@ public class DefenseBreakEffectObject : Effect
                         breakAmmount = target.StatDef.ModifiedValue * modifiedPercentAmmount;
                         break;
                 }
-                target.StatDef.ModifiedValue -= breakAmmount;
+
+                statModifier.characterStatRef = target.StatDef;
+                statModifier.additive = -breakAmmount;
+                statModifier.SetNewCounter(CounterType.Turn);
+                target.AddStatModifier(statModifier);
 
                 BattleManager.Instance.AddLine2BattleLog(
                     $"<i>{target.CharacterName} got their defense broken by {Math.Round(breakAmmount)}." +

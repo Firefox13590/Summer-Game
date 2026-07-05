@@ -1,5 +1,6 @@
 using Globals;
 using System;
+using System.Linq;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CharacterObject", menuName = "Scriptable Objects/Character")]
@@ -31,6 +32,7 @@ public class CharacterObject : ScriptableObject
 
 
     const int MODIFIER_ARRAY_SIZE = 10;
+    [SerializeReference]
     public StatModifier[] modifiers = new StatModifier[MODIFIER_ARRAY_SIZE];
 
 
@@ -41,16 +43,17 @@ public class CharacterObject : ScriptableObject
     public Effect[] battleEndEffects,
         roundStartEffects, roundEndEffects,
         turnStartEffects, turnEndEffects,
-        titEffects, hurtEffects;
+        hitEffects, hurtEffects;
 
 
     public event Action<CharacterObject> DeadCharacterEvent;
 
-    private void OnEnable()
+    private void Awake()
     {
         CurrentHp = MaxHp;
-        Array.Fill(modifiers, null);
-
+    }
+    private void OnEnable()
+    {
         BattleManager.BattleStartEvent += () => ApplyEffectList(battleStartEffects);
         BattleManager.RoundStartEvent += () => ApplyEffectList(roundStartEffects);
         BattleManager.TurnStartEvent += () => ApplyEffectList(turnStartEffects);
@@ -58,7 +61,7 @@ public class CharacterObject : ScriptableObject
         BattleManager.RoundEndEvent += () => ApplyEffectList(roundEndEffects);
         BattleManager.TurnEndEvent += () => ApplyEffectList(turnEndEffects);
 
-        BattleManager.HitEvent += (attacker, targets) => { if (attacker == this) ApplyEffectList(titEffects, attacker, targets); };
+        BattleManager.HitEvent += (attacker, targets) => { if (attacker == this) ApplyEffectList(hitEffects, attacker, targets); };
         BattleManager.HurtEvent += (defender, attacker) => { if (defender == this) ApplyEffectList(hurtEffects, defender, attacker); };
     }
     private void OnDisable()
@@ -70,7 +73,7 @@ public class CharacterObject : ScriptableObject
         BattleManager.RoundEndEvent -= () => ApplyEffectList(roundEndEffects);
         BattleManager.TurnEndEvent -= () => ApplyEffectList(turnEndEffects);
 
-        BattleManager.HitEvent -= (attacker, targets) => { if (attacker == this) ApplyEffectList(titEffects, attacker, targets); };
+        BattleManager.HitEvent -= (attacker, targets) => { if (attacker == this) ApplyEffectList(hitEffects, attacker, targets); };
         BattleManager.HurtEvent -= (defender, attacker) => { if (defender == this) ApplyEffectList(hurtEffects, defender, attacker); };
     }
     private void OnValidate()
@@ -90,7 +93,6 @@ public class CharacterObject : ScriptableObject
     }
     void ApplyEffectList(Effect[] effects)
     {
-        if (effects.Length == 0) return;
         for (int i = 0; i < effects.Length; i++)
         {
             if (effects[i] == null) throw new ArgumentNullException("Un effet ne peut pas être nul");
@@ -99,7 +101,6 @@ public class CharacterObject : ScriptableObject
     }
     void ApplyEffectList(Effect[] effects, CharacterObject attacker, CharacterObject[] targets)
     {
-        if (effects.Length == 0) return;
         for (int i = 0; i < effects.Length; i++)
         {
             if (effects[i] == null) throw new ArgumentNullException("Un effet ne peut pas être nul");
@@ -108,11 +109,51 @@ public class CharacterObject : ScriptableObject
     }
     void ApplyEffectList(Effect[] effects, CharacterObject defender, CharacterObject attacker)
     {
-        if (effects.Length == 0) return;
         for (int i = 0; i < effects.Length; i++)
         {
             if (effects[i] == null) throw new ArgumentNullException("Un effet ne peut pas être nul");
             effects[i].Apply(defender, attacker);
         }
+    }
+    public void UpdateStats()
+    {
+        foreach (var modifier in modifiers)
+        {
+            if (modifier == null) continue;
+            else if (modifier.characterStatRef == null) throw new ArgumentNullException("La référence de CharacterStat d'un StatModifier ne peut pas être nul.");
+            else
+            {
+                modifier.characterStatRef.ModifyStat(modifier);
+            }
+        }
+    }
+    public void AddStatModifier(StatModifier modifier)
+    {
+        int indexLowestCounter = -1, lowestCounter = int.MaxValue;
+        bool modifierAdded = false;
+
+        if (modifiers.Contains(modifier)) modifierAdded = true;
+
+        if (!modifierAdded)
+        {
+            for (int i = 0; i < modifiers.Length; i++)
+            {
+                if (modifiers[i] == null)
+                {
+                    modifiers[i] = modifier;
+                    break;
+                }
+
+                if (modifiers[i].Counter < lowestCounter)
+                {
+                    lowestCounter = modifiers[i].Counter;
+                    indexLowestCounter = i;
+                }
+            }
+
+            if (indexLowestCounter != -1) modifiers[indexLowestCounter] = modifier;
+        }
+
+        UpdateStats();
     }
 }
