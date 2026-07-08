@@ -140,9 +140,11 @@ public class CharacterObject : ScriptableObject
             else if (modifier.characterStatRef == null) throw new ArgumentNullException("La référence de CharacterStat d'un StatModifier ne peut pas être nul.");
             else
             {
+                //Debug.Log(modifier.Name);
                 modifier.characterStatRef.ModifyStat(modifier);
             }
         }
+        //Debug.Log("Stats updated");
     }
     private void ResetStats()
     {
@@ -155,6 +157,7 @@ public class CharacterObject : ScriptableObject
                 modifier.characterStatRef.Init();
             }
         }
+        //Debug.Log("Stats reset");
         UpdateStats();
     }
     public void AddStatModifier(StatModifier modifier)
@@ -171,6 +174,7 @@ public class CharacterObject : ScriptableObject
                 if (modifiers[i] == null)
                 {
                     modifiers[i] = modifier;
+                    modifierAdded = true;
                     break;
                 }
 
@@ -181,10 +185,15 @@ public class CharacterObject : ScriptableObject
                 }
             }
 
-            if (indexLowestCounter != -1) modifiers[indexLowestCounter] = modifier;
+            if (indexLowestCounter != -1 && !modifierAdded)
+            {
+                modifiers[indexLowestCounter] = modifier;
+                modifierAdded = true;
+            }
         }
 
-        UpdateStats();
+        //UpdateStats();
+        if (modifierAdded) ResetStats();
     }
     void DecrementCounters(CounterType counterType)
     {

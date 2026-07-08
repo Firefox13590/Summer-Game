@@ -100,6 +100,7 @@ namespace Globals
         public void ModifyStat(StatModifier modifier)
         {
             cumulativeModifiers = StatModifier.Combine(cumulativeModifiers, modifier);
+            //Debug.Log(cumulativeModifiers);
 
             //Debug.Log($"Updated CharacterStat from: {this}");
             ModifiedValue = (BaseValue + cumulativeModifiers.additive) * cumulativeModifiers.Multiplicative;
@@ -175,23 +176,14 @@ namespace Globals
             CounterType = counterType;
             if (counter == -1)
             {
-                switch (CounterType)
+                // switch expression au lieu d'un switch statement parce que c'est uniquement des affectations
+                Counter = CounterType switch
                 {
-                    case CounterType.Turn:
-                    case CounterType.Hit:
-                    case CounterType.Hurt:
-                        Counter = 3;
-                        break;
-                    case CounterType.Round:
-                        Counter = 2;
-                        break;
-                    case CounterType.Battle:
-                        Counter = 1;
-                        break;
-                    default:
-                        Counter = counter;
-                        break;
-                }
+                    CounterType.Turn or CounterType.Hit or CounterType.Hurt => 3,
+                    CounterType.Round => 2,
+                    CounterType.Battle => 1,
+                    _ => counter,
+                };
             }
             else Counter = counter;
         }
@@ -211,9 +203,13 @@ namespace Globals
         [Header("Identification et description"), Space(30)]
         public Tag[] tags;
 
+        public bool isChance = false;
+        [ShowIf(nameof(isChance)), Range(0f, 1f)]
+        public float chancePercent = .5f;
+
         [Header("Valeur de l'effet"), Space(30)]
         public NumberType numberType = NumberType.Flat;
-        [ShowIf(nameof(numberType), NumberType.Flat), Min(0)]
+        [ShowIf(nameof(numberType), NumberType.Flat)]
         [Tooltip("Valeur additive")]
         public float flatAmmount = 10;
         [ShowIf(nameof(numberType), NumberType.BasePercent), Min(0)]
@@ -222,6 +218,7 @@ namespace Globals
         [ShowIf(nameof(numberType), NumberType.ModifiedPercent), Min(0)]
         [Tooltip("Valeur multiplicative. Échelle de 0 à 1. Ex: 0.5 -> 50%. Se base sur ModifiedValue")]
         public float modifiedPercentAmmount = .2f;
+        protected float finalAmmount;
 
         [Header("Modificateur de stat, si nécessaire"), Space(30)]
         public StatModifier statModifier = new(true);

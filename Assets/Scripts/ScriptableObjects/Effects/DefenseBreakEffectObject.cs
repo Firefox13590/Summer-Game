@@ -7,17 +7,10 @@ using Random = UnityEngine.Random;
 [CreateAssetMenu(fileName = "DefenseBreak", menuName = "Scriptable Objects/Effects/DefenseBreakEffectObject")]
 public class DefenseBreakEffectObject : Effect
 {
-    public bool isChance = false;
-    [ShowIf(nameof(isChance)), Range(0f, 1f)]
-    public float chancePercent = .5f;
-
-    float breakAmmount;
-
     public override void Apply(CharacterObject _, CharacterObject[] targets)
     {
         foreach (CharacterObject target in targets)
         {
-            //Debug.Log(target.CharacterName);
             bool hitChanceRoll = false;
 
             if (isChance)
@@ -32,47 +25,28 @@ public class DefenseBreakEffectObject : Effect
                 switch (numberType)
                 {
                     case NumberType.Flat:
-                        breakAmmount = flatAmmount;
+                        finalAmmount = flatAmmount;
                         break;
                     case NumberType.BasePercent:
-                        breakAmmount = target.StatDef.BaseValue * basePercentAmmount;
+                        finalAmmount = basePercentAmmount;
                         break;
                     case NumberType.ModifiedPercent:
-                        breakAmmount = target.StatDef.ModifiedValue * modifiedPercentAmmount;
+                        finalAmmount = modifiedPercentAmmount;
                         break;
                 }
 
-                // https://github.com/Firefox13590/Summer-Game/issues/2
-                //statModifier = new(
-                //    true,
-                //    name,
-                //    CounterType.Turn,
-                //    characterStat: target.StatDef,
-                //    additive: -breakAmmount);
-                //statModifier = new(
-                //    true,
-                //    name: (string.IsNullOrEmpty(statModifier.Name.Trim())) ? name : statModifier.Name.Trim(),
-                //    counterType: statModifier.CounterType,
-                //    counter: statModifier.Counter,
-                //    additive: (numberType == NumberType.Flat) ? -breakAmmount : StatModifier.defaultStatModifier.additive,
-                //    multiplicative: (numberType != NumberType.Flat) ? breakAmmount : StatModifier.defaultStatModifier.Multiplicative
-                //    );
-                //statModifier = new(statModifier);
-                //statModifier.characterStatRef = target.StatDef;
-                //target.AddStatModifier(statModifier);
-                Debug.Log(breakAmmount);
                 target.AddStatModifier(new(
                     true,
                     (string.IsNullOrEmpty(statModifier.Name.Trim())) ? name : statModifier.Name.Trim(),
                     statModifier.CounterType,
                     statModifier.Counter,
                     target.StatDef,
-                    (numberType == NumberType.Flat) ? -breakAmmount : StatModifier.defaultStatModifier.additive,
-                    (numberType != NumberType.Flat) ? breakAmmount : StatModifier.defaultStatModifier.Multiplicative
+                    (numberType == NumberType.Flat) ? finalAmmount : StatModifier.defaultStatModifier.additive,
+                    (numberType != NumberType.Flat) ? finalAmmount : StatModifier.defaultStatModifier.Multiplicative
                     ));
 
                 BattleManager.Instance.AddLine2BattleLog(
-                    $"<i>{target.CharacterName} got their defense broken by {Math.Round(breakAmmount)}." +
+                    $"<i>{target.CharacterName} got their defense broken by {Math.Round(finalAmmount, 2)}." +
                     $"Their new defense is {target.StatDef}</i>");
             }
         }

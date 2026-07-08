@@ -16,7 +16,7 @@ Projet d'été
 
 ### Git
 
-- JAMAIS TRAVAILLER SUR LA BRANCHE 'main' sauf pour @Firefox13590.
+- JAMAIS TRAVAILLER SUR LA BRANCHE 'main' ou 'dev' sauf pour @Firefox13590.
 
 ### Structure des fichiers
 
