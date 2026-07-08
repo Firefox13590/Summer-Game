@@ -1,35 +1,13 @@
 ﻿using System;
-using System.Collections;
-using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Globals
 {
-    public struct StatModifier
+    public static class Calculations
     {
-        public int Additive;
-
-        private float _mulitplicative;
-        public float Mulitplicative
+        public static int CalculateDamage(CharacterObject attacker, CharacterObject defender)
         {
-            get => _mulitplicative;
-            set
-            {
-                if (value < 0) throw new ArgumentOutOfRangeException("Multiplicative modifier can't be negative");
-                _mulitplicative = value;
-            }
+            return Math.Max((int)Math.Round(Random.Range(1, attacker.Attack) - defender.Defense), 1);
         }
-
-        public StatModifier(int additive = 0, float multiplicative = 1) : this()
-        {
-            Additive = additive;
-            Mulitplicative = multiplicative;
-        }
-    }
-
-
-
-    public abstract class Effect : ScriptableObject
-    {
-        public abstract void Apply(CharacterObject target);
     }
 }

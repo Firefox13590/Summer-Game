@@ -1,41 +1,27 @@
 using Globals;
-using NaughtyAttributes;
 using System;
 using UnityEngine;
 
-[Serializable]
-[CreateAssetMenu(fileName = "HealEffectObject", menuName = "Scriptable Objects/Effects/Heal")]
+[CreateAssetMenu(fileName = "Heal", menuName = "Scriptable Objects/Effects/HealEffectObject")]
 public class HealEffectObject : Effect
 {
-    public NumberType NumberType = NumberType.Flat;
-    [ShowIf(nameof(NumberType), NumberType.Flat)]
-    public float FlatHeal = 10;
-    [ShowIf(nameof(NumberType), NumberType.BasePercent)]
-    [Range(0f, 1f)]
-    public float BasePercentHeal = .1f;
-    [ShowIf(nameof(NumberType), NumberType.ModifiedPercent)]
-    [Range(0f, 1f)]
-    public float ModifiedPercentHeal = .2f;
-
-    private float HealAmmount;
-
     public override void Apply(CharacterObject target)
     {
-        switch (NumberType)
+        switch (numberType)
         {
             case NumberType.Flat:
-                HealAmmount = FlatHeal;
+                finalAmmount = flatAmmount;
                 break;
             case NumberType.BasePercent:
-                HealAmmount = target.MaxHp * BasePercentHeal;
+                finalAmmount = basePercentAmmount;
                 break;
             case NumberType.ModifiedPercent:
-                HealAmmount = target.CurrentHp * ModifiedPercentHeal;
+                finalAmmount = modifiedPercentAmmount;
                 break;
         }
-        target.CurrentHp += HealAmmount;
+        target.CurrentHp += finalAmmount;
 
         BattleManager.Instance.AddLine2BattleLog(
-            $"<i>{target.CharacterName} healed {(int)HealAmmount} hp.</i>");
+            $"<i>{target.CharacterName} healed {Math.Round(finalAmmount, 2)} hp.</i>");
     }
 }

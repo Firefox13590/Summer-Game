@@ -1,3 +1,4 @@
+using Globals;
 using Placeholder;
 using System;
 using System.Collections.Generic;
@@ -6,18 +7,19 @@ using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class BattleManager : MonoBehaviour
+public class BattleManager : Singleton<BattleManager>
 {
-    public static BattleManager Instance;
+    //public static BattleManager Instance;
 
     public TextMeshProUGUI battleLog;
 
     public static event Action
         BattleStartEvent, BattleEndEvent,
-        RoundStartEvent, RoundEndEvent,
-        TurnStartEvent, TurnEndEvent;
+        RoundStartEvent, RoundEndEvent;
     public static event Action<CharacterObject>
-        HitEvent, HurtEvent;
+        TurnStartEvent, TurnEndEvent;
+    public static event Action<CharacterObject, CharacterObject[]> HitEvent;
+    public static event Action<CharacterObject, CharacterObject> HurtEvent;
 
 
     List<CharacterObject> characters = new();
@@ -28,13 +30,16 @@ public class BattleManager : MonoBehaviour
         turnStarted, turnEnded;
     int currentTurn = 0, nextTurn;
 
+#pragma warning disable CS0114 // Un membre masque un membre hérité ; le mot clé override est manquant
     private void Awake()
+#pragma warning restore CS0114 // Un membre masque un membre hérité ; le mot clé override est manquant
     {
-        if (Instance == null)
-        {
-            Instance = this;
-        }
-        else Destroy(Instance);
+        //if (Instance == null)
+        //{
+        //    Instance = this;
+        //}
+        //else Destroy(Instance);
+        base.Awake();
 
         roundCounter = turnCounter = 1;
         battleStarted = roundStarted = turnStarted = true;
@@ -144,7 +149,7 @@ public class BattleManager : MonoBehaviour
                     content = $"Turn #{turnCounter}. Turn of <i>" +
                         $"{characters[currentTurn].CharacterName}</i> started";
 
-                    TurnStartEvent?.Invoke();
+                    TurnStartEvent?.Invoke(characters[currentTurn]);
 
                     turnStarted = false;
                 }
@@ -199,7 +204,7 @@ public class BattleManager : MonoBehaviour
                     intensity = "<i><b>";
                     content = "Battle ended</b></i>";
 
-                    TurnEndEvent?.Invoke();
+                    TurnEndEvent?.Invoke(characters[currentTurn]);
 
                     Destroy(gameObject);
                 }
@@ -237,15 +242,15 @@ public class BattleManager : MonoBehaviour
             }
         }
         else attackTarget = (currentTurn == 0) ? 1 : 0;
-        int randomDmg = (int)Random.Range(1, characters[currentTurn].Attack);
+        int randomDmg = Calculations.CalculateDamage(characters[currentTurn], characters[attackTarget]);
         //Debug.Log("randomDmg: " + randomDmg);
 
         AddLine2BattleLog($"{characters[currentTurn].CharacterName} a infligé {randomDmg} dégats à {characters[attackTarget].CharacterName}");
         //Debug.Log($"HP of {characters[attackTarget].CharacterName} before randomDmg: {characters[attackTarget].CurrentHp}");
         characters[attackTarget].CurrentHp -= randomDmg;
         //Debug.Log($"HP of {characters[attackTarget].CharacterName} after randomDmg: {characters[attackTarget].CurrentHp}");
-        HitEvent?.Invoke(characters[currentTurn]);
-        HurtEvent?.Invoke(characters[attackTarget]);
+        HitEvent?.Invoke(characters[currentTurn], new[] { characters[attackTarget] });
+        HurtEvent?.Invoke(characters[attackTarget], characters[currentTurn]);
 
 
 

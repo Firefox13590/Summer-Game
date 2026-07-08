@@ -15,4 +15,15 @@ MonoBehaviour:
   <CharacterName>k__BackingField: God
   <MaxHp>k__BackingField: 150
   <Attack>k__BackingField: 30
+  <Defense>k__BackingField: 5
   <Speed>k__BackingField: 15
+  StatDef:
+    <BaseValue>k__BackingField: 100
+  BattleStartEffects: []
+  BattleEndEffects: []
+  RoundStartEffects: []
+  RoundEndEffects: []
+  TurnStartEffects: []
+  TurnEndEffects: []
+  HitEffects: []
+  HurtEffects: []

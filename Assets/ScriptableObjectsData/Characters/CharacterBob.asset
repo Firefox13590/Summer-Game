@@ -15,4 +15,34 @@ MonoBehaviour:
   <CharacterName>k__BackingField: Bob
   <MaxHp>k__BackingField: 50
   <Attack>k__BackingField: 50
+  <Defense>k__BackingField: 0
   <Speed>k__BackingField: 100
+  StatDef:
+    <BaseValue>k__BackingField: 100
+    <ModifiedValue>k__BackingField: 100
+  modifiers:
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  battleStartEffects: []
+  battleEndEffects: []
+  roundStartEffects: []
+  roundEndEffects: []
+  turnStartEffects: []
+  turnEndEffects: []
+  hitEffects:
+  - {fileID: 11400000, guid: 5248eac664f41844e9a587bfcd4a6ae2, type: 2}
+  - {fileID: 11400000, guid: 0379e8fb83546744aa72937b4b4c1642, type: 2}
+  hurtEffects: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

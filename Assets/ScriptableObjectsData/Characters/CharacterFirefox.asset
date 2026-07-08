@@ -15,11 +15,33 @@ MonoBehaviour:
   <CharacterName>k__BackingField: Firefox
   <MaxHp>k__BackingField: 100
   <Attack>k__BackingField: 21
+  <Defense>k__BackingField: 2
   <Speed>k__BackingField: 69
-  BattleStartEffects: []
-  BattleEndEffects: []
-  RoundStartEffects: []
-  RoundEndEffects: []
-  TurnStartEffects:
+  StatDef:
+    <BaseValue>k__BackingField: 100
+    <ModifiedValue>k__BackingField: 90
+  modifiers:
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  - rid: -2
+  battleStartEffects: []
+  battleEndEffects: []
+  roundStartEffects: []
+  roundEndEffects: []
+  turnStartEffects:
   - {fileID: 11400000, guid: 660142ebb3456b646adee95fbd69295c, type: 2}
-  TurnEndEffects: []
+  turnEndEffects: []
+  hitEffects: []
+  hurtEffects: []
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
