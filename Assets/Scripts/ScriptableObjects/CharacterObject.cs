@@ -1,11 +1,15 @@
-using Globals;
-using NUnit.Framework;
+using Globals.Data.Classes;
+using Globals.Data.Enums;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static UnityEditor.Progress;
 
+/// <summary>
+/// Représentation d'un personnage
+/// </summary>
+/// <remarks>
+/// Hérite de <see cref="ScriptableObject"/> au lieu de <see cref="MonoBehaviour"/> pour permettre d'utiliser les instances comme ressources dans l'éditeur.
+/// </remarks>
 [CreateAssetMenu(fileName = "CharacterObject", menuName = "Scriptable Objects/Character")]
 public class CharacterObject : ScriptableObject
 {
@@ -104,10 +108,18 @@ public class CharacterObject : ScriptableObject
 
 
 
+    /// <summary>
+    /// Lance un évènement indiquant la mort du personnage
+    /// </summary>
     public void Die()
     {
         DeadCharacterEvent?.Invoke(this);
     }
+    /// <summary>
+    /// Applique une liste d'effets
+    /// </summary>
+    /// <param name="effects">Les effets à appliquer</param>
+    /// <exception cref="ArgumentNullException">Soulève un <see cref="ArgumentNullException"/> si un effet est nul</exception>
     void ApplyEffectList(Effect[] effects)
     {
         for (int i = 0; i < effects.Length; i++)
@@ -116,6 +128,16 @@ public class CharacterObject : ScriptableObject
             effects[i].Apply(this);
         }
     }
+    /// <summary>
+    /// Applique une liste d'effets
+    /// </summary>
+    /// <remarks>
+    /// Variante adaptée pour <see cref="BattleManager.HitEvent"/>
+    /// </remarks>
+    /// <param name="effects">Les effets à appliquer</param>
+    /// <param name="attacker">L'attaquant, <see langword="this"/></param>
+    /// <param name="targets">Les cibles</param>
+    /// <exception cref="ArgumentNullException">Soulève un <see cref="ArgumentNullException"/> si un effet est nul</exception>
     void ApplyEffectList(Effect[] effects, CharacterObject attacker, CharacterObject[] targets)
     {
         for (int i = 0; i < effects.Length; i++)
@@ -124,6 +146,16 @@ public class CharacterObject : ScriptableObject
             effects[i].Apply(attacker, targets);
         }
     }
+    /// <summary>
+    /// Applique une liste d'effets
+    /// </summary>
+    /// <remarks>
+    /// Variante adaptée pour <see cref="BattleManager.HurtEvent"/>
+    /// </remarks>
+    /// <param name="effects">Les effets à appliquer</param>
+    /// <param name="defender">Le défenseur, <see langword="this"/></param>
+    /// <param name="attacker">L'attanquant</param>
+    /// <exception cref="ArgumentNullException">Soulève un <see cref="ArgumentNullException"/> si un effet est nul</exception>
     void ApplyEffectList(Effect[] effects, CharacterObject defender, CharacterObject attacker)
     {
         for (int i = 0; i < effects.Length; i++)
@@ -132,6 +164,10 @@ public class CharacterObject : ScriptableObject
             effects[i].Apply(defender, attacker);
         }
     }
+    /// <summary>
+    /// Met à jour tous les <see cref="CharacterStat"/> du personnage
+    /// </summary>
+    /// <exception cref="ArgumentNullException">Soulève un <see cref="ArgumentNullException"/> si la référence <see cref="StatModifier.characterStatRef"/> est nulle</exception>
     public void UpdateStats()
     {
         foreach (var modifier in modifiers)
@@ -146,6 +182,10 @@ public class CharacterObject : ScriptableObject
         }
         //Debug.Log("Stats updated");
     }
+    /// <summary>
+    /// Réinitialise tous les <see cref="CharacterStat"/> du personnage, puis les met à jour
+    /// </summary>
+    /// <exception cref="ArgumentNullException">Soulève un <see cref="ArgumentNullException"/> si la référence <see cref="StatModifier.characterStatRef"/> est nulle</exception>
     private void ResetStats()
     {
         foreach (var modifier in modifiers)
@@ -160,6 +200,10 @@ public class CharacterObject : ScriptableObject
         //Debug.Log("Stats reset");
         UpdateStats();
     }
+    /// <summary>
+    /// Ajoute un <see cref="StatModifier"/> à la liste de modificateurs effectifs sur le personnage
+    /// </summary>
+    /// <param name="modifier">le modificateur à ajouter</param>
     public void AddStatModifier(StatModifier modifier)
     {
         int indexLowestCounter = -1, lowestCounter = int.MaxValue;
@@ -195,6 +239,17 @@ public class CharacterObject : ScriptableObject
         //UpdateStats();
         if (modifierAdded) ResetStats();
     }
+    /// <summary>
+    /// Lance le décrément du compteur dans tous les <see cref="StatModifier"/> de <see cref="modifiers"/> sous une condition:
+    /// <list type="bullet">
+    /// <item>
+    /// <description>
+    /// Si le type de compteur est le même que <paramref name="counterType"/>
+    /// </description>
+    /// </item>
+    /// </list>
+    /// </summary>
+    /// <param name="counterType">Le type de compteur à vérifier</param>
     void DecrementCounters(CounterType counterType)
     {
         for (int i = 0; i < modifiers.Length; i++)
@@ -211,6 +266,23 @@ public class CharacterObject : ScriptableObject
             }
         }
     }
+    /// <summary>
+    /// Lance le décrément du compteur dans tous les <see cref="StatModifier"/> de <see cref="modifiers"/> sous deux conditions:
+    /// <list type="bullet">
+    /// <item>
+    /// <description>
+    /// Si le type de compteur est le même que <paramref name="counterType"/>
+    /// </description>
+    /// </item>
+    /// <item>
+    /// <description>
+    /// Si le <paramref name="character"/> est <see langword="this"/>
+    /// </description>
+    /// </item>
+    /// </list>
+    /// </summary>
+    /// <param name="counterType">Le type de compteur à vérifier</param>
+    /// <param name="character"></param>
     void DecrementCounters(CounterType counterType, CharacterObject character)
     {
         if (character == this) DecrementCounters(counterType);

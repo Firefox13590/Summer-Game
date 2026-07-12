@@ -1,28 +1,39 @@
 using UnityEngine;
-using static UnityEditor.Progress;
 
+/// <summary>
+/// Gère la création et la gestion des tuiles dans la scène. 
+/// Ce script instancie un ensemble de tuiles à partir d'un prefab, les organise en une grille et gère les interactions avec ces tuiles, telles que le survol et la sélection par le joueur. 
+/// Il permet également de mettre à jour les matériaux des tuiles en fonction de leur état (par défaut, survolé ou ciblé par le joueur).
+/// </summary>
+/// <remarks>
+/// Le code présent sert de placeholder pour tester la logique de gestion des tuiles et peut être remplacé par une version plus avancée à l'avenir.
+/// </remarks>
 public class TileManager : MonoBehaviour
 {
-    public Material matTileDefault, matTileHovered, matTilePlayerTarget;
+    [Header("Affectation inspecteur"), Space(30)]
+    [Header("Projet")]
+    public Material matTileDefault;
+    public Material matTileHovered, matTilePlayerTarget;
     public GameObject prefabTile;
+    [Header("Ajustement inspecteur")]
     [Range(1, 100)]
-    public int nbInterationsPerAxis = 10;
+    public int nbTilesPerAxis = 10;
 
     GameObject[,] allTiles;
     float tileScale = 1;
     Tile tileCurrentHover, tileCurrentPlayerTarget;
-    int[] playerTargetPos = new int[2] { 0, 0 };
+    int[] playerTargetPos = new int[2];
 
     private void Awake()
     {
         tileScale = prefabTile.transform.lossyScale.x;
-        allTiles = new GameObject[nbInterationsPerAxis, nbInterationsPerAxis];
+        allTiles = new GameObject[nbTilesPerAxis, nbTilesPerAxis];
 
         //allTiles = GameObject.FindGameObjectsWithTag("Tile");
-        for (int i = 0; i < nbInterationsPerAxis; i++)
+        for (int i = 0; i < nbTilesPerAxis; i++)
         {
-            GameObject[] tempArray = new GameObject[nbInterationsPerAxis];
-            for (int j = 0; j < nbInterationsPerAxis; j++)
+            GameObject[] tempArray = new GameObject[nbTilesPerAxis];
+            for (int j = 0; j < nbTilesPerAxis; j++)
             {
                 GameObject tileInstance = Instantiate(prefabTile);
                 tempArray[j] = tileInstance;
@@ -36,6 +47,11 @@ public class TileManager : MonoBehaviour
 
 
 
+    /// <summary>
+    /// Sélectionne une case qui est survolée par la souris et met à jour l'affichage des cases.
+    /// </summary>
+    /// <remarks>Si la case sélectionnée est déjà survolée, rien ne se passe.</remarks>
+    /// <param name="tile">La case <see cref="Tile"/> sélectionnée comme étant survolée. Peut être <see langword="null"/> pour démontrer aucun survol.</param>
     public void SetHoveredTile(Tile tile)
     {
         if (tileCurrentHover != tile)
@@ -44,6 +60,11 @@ public class TileManager : MonoBehaviour
             UpdateTilesMaterial();
         }
     }
+    /// <summary>
+    /// Sélectionne une case qui devient la cible du joueur et met à jour l'affichage des cases.
+    /// </summary>
+    /// <remarks>Si la case sélectionnée est déjà ciblée, rien ne se passe.</remarks>
+    /// <param name="tile">La case <see cref="Tile"/> sélectionnée comme étant ciblée. Peut être <see langword="null"/> pour démontrer aucune cible.</param>
     public void SetTargetedTile(Tile tile)
     {
         if (tileCurrentPlayerTarget != tile)
@@ -52,27 +73,11 @@ public class TileManager : MonoBehaviour
             UpdateTilesMaterial();
         }
     }
+    /// <summary>
+    /// Met à jour les matériaux de toutes les cases en fonction de leur état actuel (par défaut, survolé ou ciblé par le joueur).
+    /// </summary>
     public void UpdateTilesMaterial()
     {
-        //Debug.Log("update mat of tiles");
-        foreach (var item in allTiles)
-        {
-            if (tileCurrentPlayerTarget != null && item == tileCurrentPlayerTarget.gameObject)
-            {
-                //Debug.Log("new targeted tile");
-                item.GetComponent<Tile>().meshRenderer.material = matTilePlayerTarget;
-            }
-            else if (tileCurrentHover != null && item == tileCurrentHover.gameObject)
-            {
-                //Debug.Log("new hovered tile");
-                item.GetComponent<Tile>().meshRenderer.material = matTileHovered;
-            }
-            else
-            {
-                item.GetComponent<Tile>().meshRenderer.material = matTileDefault;
-            }
-        }
-
         for (int i = 0; i < allTiles.GetLength(0); i++)
         {
             for (int j = 0; j < allTiles.GetLength(1); j++)

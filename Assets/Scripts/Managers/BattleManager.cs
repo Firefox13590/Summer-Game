@@ -1,4 +1,5 @@
 using Globals;
+using Globals.Data.Classes;
 using Placeholder;
 using System;
 using System.Collections.Generic;
@@ -7,10 +8,16 @@ using TMPro;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
+/// <summary>
+/// Gestionnaire pour les combats.
+/// <para>
+/// Gère la progression des combats, le tour des personnages et le journal de combat.
+/// </para>
+/// </summary>
 public class BattleManager : Singleton<BattleManager>
 {
-    //public static BattleManager Instance;
-
+    [Header("Affectation inspecteur"), Space(30)]
+    [Header("Hiérarchie")]
     public TextMeshProUGUI battleLog;
 
     public static event Action
@@ -93,7 +100,13 @@ public class BattleManager : Singleton<BattleManager>
         battleLogText = "";
         UpdateBettleLogText();
     }
-
+    /// <summary>
+    /// Passe à la prochaine étape de la progression du combat.
+    /// <para>
+    /// Gère et met à jour les états de début et de fin pour le combat, les tours et les rounds tout en déclenchant les événements correspondants.
+    /// </para>
+    /// </summary>
+    /// <exception cref="Exception">Soulève une exception quand une étape de progression de bataille est en même temps commnecée et terminée, car impossible</exception>
     public void NextBattleAction()
     {
         string color, intensity, content, fullText;
@@ -107,10 +120,11 @@ public class BattleManager : Singleton<BattleManager>
             turnStarted & turnEnded
             )
         {
-            throw new Exception("State used for battle processing can't be started and ended at the same time");
+            throw new Exception("Étape de progression de bataille est en même temps commnecée et terminée");
         }
 
 
+        // énorme check pour savoir quelle étape de progression de bataille va commencer ou terminer, ou si on est en progression normale d'un tour (tour d'un personnage)
         while (true)
         {
             if (characters.Count == 1)
@@ -119,7 +133,7 @@ public class BattleManager : Singleton<BattleManager>
                 battleEnded = true;
             }
 
-            // checks pour états qui vont commencer
+            // checks pour étapes qui vont commencer
             if (battleStarted || roundStarted || turnStarted)
             {
                 //Debug.Log("Un battle state commence");
@@ -162,11 +176,11 @@ public class BattleManager : Singleton<BattleManager>
             {
                 //Debug.Log("action personnage (progression tour)");
 
-                RoundHandler();
+                TurnHandler();
                 break;
             }
 
-            // checks pour états qui vont terminer
+            // checks pour étapes qui vont terminer
             if (battleEnded || roundEnded || turnEnded)
             {
                 //Debug.Log("Un battle state termine");
@@ -226,11 +240,12 @@ public class BattleManager : Singleton<BattleManager>
 
         AddLine2BattleLog(fullText);
     }
-    void RoundHandler()
-    {
-        //Debug.Log("progression tour normale");
-        TurnHandler();
-    }
+    /// <summary>
+    /// Mini gestionnaire de tour.
+    /// <para>
+    /// Permet à un personnage de faire une action (attaquer un autre personnage), déclenche les événements correspondants et met à jour les compteurs de tour.
+    /// </para>
+    /// </summary>
     void TurnHandler()
     {
         int attackTarget = currentTurn;
@@ -242,7 +257,7 @@ public class BattleManager : Singleton<BattleManager>
             }
         }
         else attackTarget = (currentTurn == 0) ? 1 : 0;
-        int randomDmg = Calculations.CalculateDamage(characters[currentTurn], characters[attackTarget]);
+        int randomDmg = Calculations.Damage(characters[currentTurn], characters[attackTarget]);
         //Debug.Log("randomDmg: " + randomDmg);
 
         AddLine2BattleLog($"{characters[currentTurn].CharacterName} a infligé {randomDmg} dégats à {characters[attackTarget].CharacterName}");
@@ -262,7 +277,10 @@ public class BattleManager : Singleton<BattleManager>
         }
         turnEnded = true;
     }
-
+    /// <summary>
+    /// Enlève un personnage de la liste des personnages vivants et ajuste les compteurs de tour si nécessaire.
+    /// </summary>
+    /// <param name="character">Le personnage décédé</param>
     void MournCharacterList(CharacterObject character)
     {
         int deadCharacterIndex = characters.IndexOf(character);

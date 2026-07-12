@@ -13,22 +13,25 @@ MonoBehaviour:
   m_Name: DefenseBreakFlatSmall
   m_EditorClassIdentifier: Assembly-CSharp::DefenseBreakEffectObject
   tags: 
+  isChance: 1
+  chancePercent: 0.5
   numberType: 0
-  flatAmmount: 10
+  flatAmmount: -10
   basePercentAmmount: 0.1
   modifiedPercentAmmount: 0.2
   statModifier:
-    <Name>k__BackingField: 
+    <Name>k__BackingField: DefenseBreakFlatSmall
     <CounterType>k__BackingField: 0
-    <Counter>k__BackingField: -1
+    <Counter>k__BackingField: 3
     characterStatRef:
-      rid: -2
-    additive: 0
-    mulitplicative: 1
-  isChance: 0
-  chancePercent: 0.5
+      rid: 1112570705999298702
+    additive: -10
+    multiplicative: 1
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 1112570705999298702
+      type: {class: CharacterStat, ns: Globals, asm: Assembly-CSharp}
+      data:
+        <BaseValue>k__BackingField: 100
+        <ModifiedValue>k__BackingField: 40

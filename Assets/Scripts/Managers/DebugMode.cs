@@ -1,9 +1,14 @@
-﻿using Globals;
+﻿using Globals.Data.Classes;
 using NaughtyAttributes;
 using UnityEngine;
 
+#if UNITY_EDITOR
+/// <summary>
+/// Classe qui sert d'outil de déboguage/développement pour le projet.
+/// </summary>
 public class DebugMode : Singleton<DebugMode>
 {
+    [Tooltip("Active le mode de déboguage/développeur ou non")]
     public bool activateDebugMode = false;
 
     [Header("Character"), Space(30)]
@@ -16,3 +21,4 @@ public class DebugMode : Singleton<DebugMode>
         set => alsoOutputBaseValue = value;
     }
 }
+#endif
