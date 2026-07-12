@@ -1,5 +1,5 @@
-﻿using Globals;
-using NaughtyAttributes;
+﻿using Globals.Data.Classes;
+using Globals.Data.Enums;
 using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -9,6 +9,7 @@ public class DefenseBreakEffectObject : Effect
 {
     public override void Apply(CharacterObject _, CharacterObject[] targets)
     {
+        CalculateFinalAmmount();
         foreach (CharacterObject target in targets)
         {
             bool hitChanceRoll = false;
@@ -22,19 +23,6 @@ public class DefenseBreakEffectObject : Effect
 
             if (hitChanceRoll)
             {
-                switch (numberType)
-                {
-                    case NumberType.Flat:
-                        finalAmmount = flatAmmount;
-                        break;
-                    case NumberType.BasePercent:
-                        finalAmmount = basePercentAmmount;
-                        break;
-                    case NumberType.ModifiedPercent:
-                        finalAmmount = modifiedPercentAmmount;
-                        break;
-                }
-
                 target.AddStatModifier(new(
                     true,
                     (string.IsNullOrEmpty(statModifier.Name.Trim())) ? name : statModifier.Name.Trim(),

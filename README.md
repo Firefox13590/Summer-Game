@@ -96,7 +96,7 @@ Projet d'été
 
 - Les méthodes personnalisées devraient se retrouver après les méthodes propres à la Classe `MonoBehaviour`.
 
-#### Nomenclature:
+#### Nomenclature
 
 - Le nom des classes doivent être en PascalCase.
 - Le nom des champs doivent être en camelCase et peuvent ou non débuter par un `_`. Ex: `_health` ou `health`.

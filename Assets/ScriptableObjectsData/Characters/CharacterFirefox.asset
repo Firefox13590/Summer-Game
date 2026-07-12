@@ -35,8 +35,7 @@ MonoBehaviour:
   battleEndEffects: []
   roundStartEffects: []
   roundEndEffects: []
-  turnStartEffects:
-  - {fileID: 11400000, guid: 660142ebb3456b646adee95fbd69295c, type: 2}
+  turnStartEffects: []
   turnEndEffects: []
   hitEffects: []
   hurtEffects: []

@@ -12,8 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 36881b491927fc649a572385cfdfb06f, type: 3}
   m_Name: HealFlatSmall
   m_EditorClassIdentifier: Assembly-CSharp::HealEffectObject
-  Tags: 0000000004000000050000000700000009000000
-  NumberType: 0
-  FlatHeal: 10
-  BasePercentHeal: 0.1
-  ModifiedPercentHeal: 0.2
+  tags: 
+  isChance: 0
+  chancePercent: 0.5
+  numberType: 0
+  flatAmmount: 10
+  basePercentAmmount: 0.1
+  modifiedPercentAmmount: 0.2
+  statModifier:
+    <Name>k__BackingField: 
+    <CounterType>k__BackingField: 0
+    <Counter>k__BackingField: 3
+    characterStatRef:
+      rid: -2
+    additive: 0
+    multiplicative: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }

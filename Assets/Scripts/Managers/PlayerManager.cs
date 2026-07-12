@@ -3,12 +3,21 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Classe qui controle le joueur, nottament son déplacement.
+/// </summary>
+/// <remarks>
+/// Le code présent sert de placeholder simple pour tester le déplacement du joueur.
+/// </remarks>
 public class PlayerManager : MonoBehaviour
 {
+    [Header("Affectation inspecteur"), Space(30)]
+    [Header("Hiérarchie")]
     public GameObject indicateurClick, indicateurSouris;
-    [Description("Si false, utilise mvt avec souris (raycast)")]
-    public bool useTileMvt;
     public TileManager tileManager;
+    [Header("Ajustement inspecteur")]
+    [Tooltip("Si false, utilise mvt avec souris (raycast)")]
+    public bool useTileMvt;
 
     Camera camera;
     NavMeshAgent agent;
@@ -37,13 +46,6 @@ public class PlayerManager : MonoBehaviour
             {
                 if (hit.collider != null)
                 {
-                    //if (hit.transform.TryGetComponent<Tile>(out var tileElement))
-                    //{
-                    //    tileElement.isHovered = true;
-                    //}
-
-
-
                     //Debug.Log(hit.transform);
                     //Debug.Log(hit.transform.gameObject);
                     hit.transform.TryGetComponent<Tile>(out var tileElement);
@@ -80,7 +82,9 @@ public class PlayerManager : MonoBehaviour
 
 
 
-
+    /// <summary>
+    /// Déplace le joueur vers la position de la souris, convertie en point 3D dans le monde.
+    /// </summary>
     void MovePlayer()
     {
         agent.destination = worldPosition;

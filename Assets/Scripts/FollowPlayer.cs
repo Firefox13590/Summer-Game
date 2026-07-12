@@ -1,10 +1,18 @@
 using UnityEngine;
 
+/// <summary>
+/// Permet à la caméra de suivre le joueur en ajustant sa position et sa rotation si nécessaire.
+/// </summary>
+/// <remarks>
+/// Le code présent est un placeholder simple et sera remplacé par un système de caméra plus avancé dans le futur.
+/// </remarks>
 [RequireComponent(typeof(Camera))]
 public class FollowPlayer : MonoBehaviour
 {
-    public Vector3 adjustPos = Vector3.one,
-        adjustRot = Vector3.zero;
+    [Header("Affectation inspecteur"), Space(30)]
+    [Header("Ajustement inspecteur")]
+    public Vector3 adjustPos = Vector3.one;
+    public Vector3 adjustRot = Vector3.zero;
 
     GameObject player;
 

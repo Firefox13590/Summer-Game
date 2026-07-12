@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: DefenseBreakBaseHigh
   m_EditorClassIdentifier: Assembly-CSharp::DefenseBreakEffectObject
   tags: 
+  isChance: 1
+  chancePercent: 0.1
   numberType: 1
   flatAmmount: 10
   basePercentAmmount: 0.5
@@ -24,9 +26,7 @@ MonoBehaviour:
     characterStatRef:
       rid: -2
     additive: 0
-    mulitplicative: 1
-  isChance: 0
-  chancePercent: 0.5
+    multiplicative: 1
   references:
     version: 2
     RefIds:

@@ -3,8 +3,14 @@ using UnityEngine;
 
 namespace Placeholder
 {
+    /// <summary>
+    /// Sert à afficher les informations d'un CharacterObject dans l'UI.
+    /// </summary>
+    /// <remarks>Placeholder</remarks>
     public class CharacterObject2UI : MonoBehaviour
     {
+        [Header("Affectation inspecteur"), Space(30)]
+        [Header("Projet")]
         public CharacterObject character;
 
         GameObject textContainer;
@@ -46,6 +52,10 @@ namespace Placeholder
         {
             textContainer.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = $"HP: {character.CurrentHp}/{character.MaxHp}";
         }
+        /// <summary>
+        /// Détruit le GameObject représantant le personnage
+        /// </summary>
+        /// <param name="_">Le personnage qui est mort</param>
         void KillCharacter(CharacterObject _)
         {
             Destroy(gameObject);

@@ -1,4 +1,4 @@
-using Globals;
+using Globals.Data.Classes;
 using System;
 using UnityEngine;
 
@@ -7,18 +7,7 @@ public class HealEffectObject : Effect
 {
     public override void Apply(CharacterObject target)
     {
-        switch (numberType)
-        {
-            case NumberType.Flat:
-                finalAmmount = flatAmmount;
-                break;
-            case NumberType.BasePercent:
-                finalAmmount = basePercentAmmount;
-                break;
-            case NumberType.ModifiedPercent:
-                finalAmmount = modifiedPercentAmmount;
-                break;
-        }
+        CalculateFinalAmmount();
         target.CurrentHp += finalAmmount;
 
         BattleManager.Instance.AddLine2BattleLog(

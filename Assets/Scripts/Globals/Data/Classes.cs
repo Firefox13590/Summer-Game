@@ -1,68 +1,13 @@
-﻿using NaughtyAttributes;
+﻿using Globals.Data.Enums;
+using NaughtyAttributes;
 using System;
-using System.Xml.Linq;
 using UnityEngine;
 
-namespace Globals
+namespace Globals.Data.Classes
 {
-    public enum NumberType
-    {
-        Flat,
-        BasePercent,
-        ModifiedPercent
-    }
-    public enum AffinityResistance
-    {
-        Weak = -1,
-        Normal,
-        Strong
-    }
-    public enum AffinityType
-    {
-        Blunt = 1,
-        Slash,
-        Pierce,
-        Fire,
-        Water,
-        Thunder,
-        Earth,
-        Light,
-        Dark,
-
-        Absolute = 11,
-        Typeless,
-
-        Physical = Blunt | Slash | Pierce,
-        Magic = Fire | Water | Thunder | Earth | Light | Dark,
-        Special = Absolute | Typeless
-    }
-    public enum Tag
-    {
-        Health,
-        Attack,
-        Defense,
-        Speed,
-        Heal,
-        Support,
-        Offensive,
-        Defensive,
-        Chance,
-        Survivability,
-        Damage,
-        DamageOverTime
-    }
-    public enum CounterType
-    {
-        Infinite = -1,
-        Turn,
-        Round,
-        Battle,
-        Hit,
-        Hurt
-    }
-
-
-
+    /// <summary>
+    /// Repréentation d'une statistique de personnage
+    /// </summary>
     [Serializable]
     public class CharacterStat
     {
@@ -70,6 +15,9 @@ namespace Globals
         public float BaseValue { get; private set; }
         [field: SerializeField, ReadOnly, AllowNesting]
         public float ModifiedValue { get; set; }
+        /// <summary>
+        /// Le cumul de tous les modificateurs actifs sur cette stat
+        /// </summary>
         StatModifier cumulativeModifiers = new();
 
         public static CharacterStat defaultCharacterStat = new();
@@ -78,7 +26,7 @@ namespace Globals
         public CharacterStat()
         {
             BaseValue = 0;
-            ModifiedValue = 0;
+            Init();
         }
         public CharacterStat(float baseValue)
         {
@@ -92,11 +40,21 @@ namespace Globals
 
 
 
+        /// <summary>
+        /// Initialise l'objet en affectant la valeur de base à la vlaeur modifiée et en nettoyant le cumul de modificateurs
+        /// </summary>
+        /// <remarks>
+        /// Cette méthode sert essentiellement de réinitialisation
+        /// </remarks>
         public void Init()
         {
             ModifiedValue = BaseValue;
             cumulativeModifiers = new();
         }
+        /// <summary>
+        /// Permet de modifier la stat
+        /// </summary>
+        /// <param name="modifier">Le modificateur à appliquer</param>
         public void ModifyStat(StatModifier modifier)
         {
             cumulativeModifiers = StatModifier.Combine(cumulativeModifiers, modifier);
@@ -107,23 +65,31 @@ namespace Globals
             //Debug.Log($"To: {this}");
         }
     }
-
+    /// <summary>
+    /// Représente un modificateur de stat
+    /// </summary>
     [Serializable]
     public class StatModifier
     {
-        readonly bool isReadOnly = false;
+        readonly bool isInspectorReadOnly = false;
 
-        [field: SerializeField, EnableIf(nameof(isReadOnly)), AllowNesting]
+        [field: SerializeField, EnableIf(nameof(isInspectorReadOnly)), AllowNesting]
         public string Name { get; private set; }
-        [field: SerializeField, EnableIf(nameof(isReadOnly)), AllowNesting]
+        /// <summary>
+        /// Le type de compteur qui affectera le modificateur
+        /// </summary>
+        [field: SerializeField, EnableIf(nameof(isInspectorReadOnly)), AllowNesting]
         public CounterType CounterType { get; private set; }
-        [field: SerializeField, EnableIf(nameof(isReadOnly)), AllowNesting]
+        [field: SerializeField, EnableIf(nameof(isInspectorReadOnly)), AllowNesting]
         public int Counter { get; private set; }
+        /// <summary>
+        /// Une référence vers la <see cref="CharacterStat"/> à modifier
+        /// </summary>
         [SerializeReference, ReadOnly, AllowNesting]
         public CharacterStat characterStatRef;
-        [EnableIf(nameof(isReadOnly)), AllowNesting]
+        [EnableIf(nameof(isInspectorReadOnly)), AllowNesting]
         public float additive;
-        [SerializeField, EnableIf(nameof(isReadOnly)), AllowNesting]
+        [SerializeField, EnableIf(nameof(isInspectorReadOnly)), AllowNesting]
         float multiplicative;
         public float Multiplicative
         {
@@ -139,7 +105,7 @@ namespace Globals
 
         public StatModifier()
         {
-            isReadOnly = false;
+            isInspectorReadOnly = false;
             Name = "";
             SetNewCounter(0, -1);
             characterStatRef = null;
@@ -148,7 +114,7 @@ namespace Globals
         }
         public StatModifier(StatModifier modifier)
         {
-            isReadOnly = modifier.isReadOnly;
+            isInspectorReadOnly = modifier.isInspectorReadOnly;
             Name = modifier.Name;
             SetNewCounter(modifier.CounterType, modifier.Counter);
             characterStatRef = modifier.characterStatRef;
@@ -157,7 +123,7 @@ namespace Globals
         }
         public StatModifier(bool isReadOnly = false, string name = "", CounterType counterType = 0, int counter = -1, CharacterStat characterStat = null, float additive = 0, float multiplicative = 1)
         {
-            this.isReadOnly = isReadOnly;
+            this.isInspectorReadOnly = isReadOnly;
             Name = name;
             SetNewCounter(counterType, counter);
             characterStatRef = characterStat;
@@ -171,6 +137,13 @@ namespace Globals
 
 
 
+        /// <summary>
+        /// Permet de changer le type de compteur ainsi que la valeur de départ du compteur
+        /// </summary>
+        /// <param name="counterType">Le nouveau type de compteur</param>
+        /// <param name="counter">
+        /// La nouvelle valeur de départ du compteur. 
+        /// Si <paramref name="counter"/> = <c>-1</c>, une valeur par défaut lui sera automatiquement attribué selon le type de compteur.</param>
         public void SetNewCounter(CounterType counterType, int counter = -1)
         {
             CounterType = counterType;
@@ -187,7 +160,16 @@ namespace Globals
             }
             else Counter = counter;
         }
+        /// <summary>
+        /// D♪0crémente le compteur
+        /// </summary>
         public void DecrementCounter() => Counter--;
+        /// <summary>
+        /// Calcule le cumulatif de deux modificateurs
+        /// </summary>
+        /// <param name="firstModifier">Le premier modificateur</param>
+        /// <param name="secondModifier">Le deuxième modificateur</param>
+        /// <returns>Le cumul des deux</returns>
         public static StatModifier Combine(StatModifier firstModifier, StatModifier secondModifier)
         {
             return new(
@@ -195,8 +177,16 @@ namespace Globals
                 multiplicative: firstModifier.multiplicative * secondModifier.multiplicative);
         }
     }
-
-
+    /// <summary>
+    /// Représente un effet. Peut être un bonus (buff) ou un malus (debuff).
+    /// <para>
+    /// Vient automatiquement avec un <see cref="StatModifier"/>
+    /// </para>
+    /// </summary>
+    /// <remarks>
+    /// Classe abstraite.
+    /// Hérite de <see cref="ScriptableObject"/> au lieu de <see cref="MonoBehaviour"/> pour permettre d'utiliser les instances comme ressources dans l'éditeur.
+    /// </remarks>
     [Serializable]
     public abstract class Effect : ScriptableObject
     {
@@ -205,7 +195,7 @@ namespace Globals
 
         public bool isChance = false;
         [ShowIf(nameof(isChance)), Range(0f, 1f)]
-        public float chancePercent = .5f;
+        public float chancePercent = 1f;
 
         [Header("Valeur de l'effet"), Space(30)]
         public NumberType numberType = NumberType.Flat;
@@ -224,11 +214,55 @@ namespace Globals
         public StatModifier statModifier = new(true);
 
 
-        public virtual void Apply() { }
+        /// <summary>
+        /// Calcule la valeur finale
+        /// </summary>
+        protected void CalculateFinalAmmount()
+        {
+            switch (numberType)
+            {
+                case NumberType.Flat:
+                    finalAmmount = flatAmmount;
+                    break;
+                case NumberType.BasePercent:
+                    finalAmmount = basePercentAmmount;
+                    break;
+                case NumberType.ModifiedPercent:
+                    finalAmmount = modifiedPercentAmmount;
+                    break;
+            }
+        }
+        /// <summary>
+        /// Applique un effet à une cible
+        /// </summary>
+        /// <param name="target">La cible</param>
         public virtual void Apply(CharacterObject target) { }
+        /// <summary>
+        /// Applique un effet à plusieurs cibles
+        /// </summary>
+        /// <remarks>
+        /// Variante adaptée pour <see cref="BattleManager.HitEvent"/>
+        /// </remarks>
+        /// <param name="attacker">L'attaquant, le <see langword="this"/> du <see cref="CharacterObject"/> qui détient l'effet présent dans l'une de ces listes d'effets</param>
+        /// <param name="targets">Les cibles</param>
         public virtual void Apply(CharacterObject attacker, CharacterObject[] targets) { }
+        /// <summary>
+        /// Applique un effet à une cible
+        /// </summary>
+        /// <remarks>
+        /// Variante adaptée pour <see cref="BattleManager.HurtEvent"/>
+        /// </remarks>
+        /// <param name="defender">Le défenseur, le <see langword="this"/> du <see cref="CharacterObject"/> qui détient l'effet présent dans l'une de ces listes d'effets</param>
+        /// <param name="attacker">L'attaquant</param>
         public virtual void Apply(CharacterObject defender, CharacterObject attacker) { }
     }
+    /// <summary>
+    /// Classe triviale pour permttre d'intégrer aisémment le pattern de singleton
+    /// </summary>
+    /// <remarks>
+    /// Hérite de <see cref="MonoBehaviour"/>
+    /// </remarks>
+    /// <typeparam name="T">Type de la classe enfant</typeparam>
     public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {
         private static T instance;
