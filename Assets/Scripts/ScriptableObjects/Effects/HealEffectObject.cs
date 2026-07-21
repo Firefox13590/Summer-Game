@@ -1,16 +1,18 @@
-using Globals.Data.Classes;
-using System;
+using Model.Data;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "Heal", menuName = "Scriptable Objects/Effects/HealEffectObject")]
-public class HealEffectObject : Effect
+namespace Model.SO
 {
-    public override void Apply(CharacterObject target)
+    [CreateAssetMenu(fileName = "Heal", menuName = "Scriptable Objects/Effects/HealEffectObject")]
+    public class HealEffectObject : Effect
     {
-        CalculateFinalAmmount();
-        target.CurrentHp += finalAmmount;
+        public override void Apply(CharacterObject target)
+        {
+            CalculateFinalAmmount();
+            target.CurrentHp += finalAmmount;
 
-        BattleManager.Instance.AddLine2BattleLog(
-            $"<i>{target.CharacterName} healed {Math.Round(finalAmmount, 2)} hp.</i>");
+            //BattleManager.Instance.AddLine2BattleLog(
+            //    $"<i>{target.CharacterName} healed {Math.Round(finalAmmount, 2)} hp.</i>");
+        }
     }
 }

@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc8a088ff83813d40b06f5886ae0f43d, type: 3}
+  m_Name: DefenseBreakFlatSmall
+  m_EditorClassIdentifier: Assembly-CSharp::DefenseBreakEffectObject
+  tags: 
+  isChance: 1
+  chancePercent: 0.5
+  isStackable: 0
+  stackAmmount: 0
+  doesOverride: 0
+  numberType: 0
+  flatAmmount: -10
+  basePercentAmmount: 0.1
+  modifiedPercentAmmount: 0.2
+  statModifier:
+    <Name>k__BackingField: DefenseBreakFlatSmall
+    <CounterType>k__BackingField: 0
+    <Counter>k__BackingField: 3
+    characterStatRef:
+      rid: 1112570705999298702
+    additive: -10
+    multiplicative: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
+    - rid: 1112570705999298702
+      type: {class: CharacterStat, ns: Globals, asm: Assembly-CSharp}
+      data:
+        <BaseValue>k__BackingField: 100
+        <ModifiedValue>k__BackingField: 40
